@@ -1,50 +1,36 @@
 package AudioAnalyzing;
 
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.SilenceDetector;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
-import be.hogent.tarsos.dsp.AudioProcessor;
-import be.hogent.tarsos.dsp.ContinuingSilenceDetector;
-
 /**
  * Dient als Lautstärkemessung, z.B. um vor zu lauter Lautstärke zu warnen
+ *
  * @author i01frajos445
  */
 public class SoundPressureDetector implements AudioProcessor {
 
-    ContinuingSilenceDetector silenceDetector;
+    private SilenceDetector silenceDetector;
+    
+    //Settings
+    private final double threshold = 0;
 
     public SoundPressureDetector() {
         Detector dec = new Detector(Detector.MAINMIC);
 
         // add a processor, handle percussion event.
-        silenceDetector = new ContinuingSilenceDetector();
+        silenceDetector = new SilenceDetector(threshold, false);
         dec.dispatcher.addAudioProcessor(silenceDetector);
         dec.dispatcher.addAudioProcessor(this);
 
         // run the dispatcher (on a new thread).
         new Thread(dec.dispatcher, "Audio dispatching").start();
-    }
-
-    @Override
-    public boolean processFull(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-        handleSound();
-        return true;
-    }
-
-    @Override
-    public boolean processOverlapping(float[] audioFloatBuffer, byte[] audioByteBuffer) {
-        handleSound();
-        return true;
-    }
-
-    @Override
-    public void processingFinished() {
-        //Do nothing
     }
 
     private void handleSound() {
@@ -55,7 +41,19 @@ public class SoundPressureDetector implements AudioProcessor {
         System.out.println("Current sound pressure level: " + currentSPL + "dB");
     }
 
+    @Override
+    public boolean process(AudioEvent audioEvent) {
+        handleSound();
+        return true;
+    }
+
     public static void main(String[] args) {
         new SoundPressureDetector();
     }
+
+    @Override
+    public void processingFinished() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

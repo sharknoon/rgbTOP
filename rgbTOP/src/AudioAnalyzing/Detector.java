@@ -5,10 +5,8 @@ package AudioAnalyzing;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
-
 import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -33,22 +31,22 @@ public class Detector {
     static float defaultSampleRate = 44100;
     static int defaultBufferSize = 512;
     static int defaultOverlap = 0;
-    
+
     float sampleRate = defaultSampleRate;
     int bufferSize = defaultBufferSize;
     int overlap = defaultOverlap;
-    
-    public Detector(int mode){
+
+    public Detector(int mode) {
         this.start(mode);
     }
-    
-    public Detector(int mode, float pSampleRate, int pBufferSize, int pOverlap){
+
+    public Detector(int mode, float pSampleRate, int pBufferSize, int pOverlap) {
         this.sampleRate = pSampleRate;
         this.bufferSize = pBufferSize;
         this.overlap = pOverlap;
         this.start(mode);
     }
-    
+
     public void start(int mode) {
         Mixer mixer = null;
         if (mode == MAINMIC) {
@@ -56,7 +54,7 @@ public class Detector {
         } else if (mode == MAINSPEAKER) {
             mixer = getMainSpeaker();
         }
-        
+
         try {
             if (dispatcher != null) {
                 dispatcher.stop();
@@ -73,14 +71,13 @@ public class Detector {
             line.start();
             final AudioInputStream stream = new AudioInputStream(line);
 
+            JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
             // create a new dispatcher
-            dispatcher = new AudioDispatcher(stream, bufferSize, overlap);
+            dispatcher = new AudioDispatcher(audioStream, bufferSize, overlap);
             System.out.println("fertig");
 
         } catch (LineUnavailableException ex) {
             System.err.println("Could not load MixerLine: " + ex);
-        } catch (UnsupportedAudioFileException ex) {
-            System.err.println("Audiofile not supported: " + ex);
         } catch (NullPointerException e) {
             System.err.println("Nullpointer: " + e);
         }

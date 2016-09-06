@@ -8,7 +8,8 @@ package AudioAnalyzing;
 
 
 
-import be.hogent.tarsos.dsp.PercussionOnsetDetector.PercussionHandler;
+
+import be.tarsos.dsp.onsets.OnsetHandler;
 import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
@@ -17,7 +18,7 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
  * Dient als Schlagerkennung, z.B. beim klatschen
  * @author i01frajos445
  */
-public class PercussionDetector implements PercussionHandler{
+public class PercussionDetector implements OnsetHandler{
 
     public PercussionDetector() {
         Detector dec = new Detector(Detector.MAINMIC);        
@@ -35,7 +36,7 @@ public class PercussionDetector implements PercussionHandler{
     }
 
     @Override
-    public void handlePercussion(double timestamp) {
+    public void handleOnset(double time, double salience) {
         System.out.println("Percussion happened!");
     }
 

@@ -15,7 +15,7 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
 /**
- * Dient als Schlagerkennung, z.B. beim klatschen
+ * Dient als Schlagerkennung, z.B. beim Klatschen
  * @author i01frajos445
  */
 public class PercussionDetector implements OnsetHandler{

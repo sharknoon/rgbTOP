@@ -112,7 +112,7 @@ public class LEDs {
         // create GPIO controller instance
         GpioController gpio = GpioFactory.getInstance();
 
-        // All Raspberry Pi models support a hardware PWM pin on GPIO_01.
+        // All Raspberry Pi models support a hardware PWM pin on GPIO_01. (A, A+, B, B+, 2B, 3B, 0)
         // Raspberry Pi models A+, B+, 2B, 3B also support hardware PWM pins: GPIO_23, GPIO_24, GPIO_26
         //
         // by default we will use gpio pin #01; however, if an argument

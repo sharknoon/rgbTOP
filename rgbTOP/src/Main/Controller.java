@@ -1,4 +1,7 @@
+package Main;
 
+
+import AudioAnalyzing.SilenceDetector;
 import LEDControlling.LEDs;
 
 /*
@@ -11,11 +14,18 @@ import LEDControlling.LEDs;
  *
  * @author i01frajos445
  */
-public class Controller {
+public class Controller implements Interfaces.SilenceDetector {
+    
+    boolean silence;
     
     public Controller(String[] args){
-        LEDs leds = new LEDs(args);
-        
+        //LEDs leds = new LEDs(args);
+        SilenceDetector spd = new SilenceDetector(this);
+    }
+    
+    @Override
+    public void silenceChanged(boolean newSilence){
+        silence = newSilence;
     }
     
     public static void main(String[] args) {

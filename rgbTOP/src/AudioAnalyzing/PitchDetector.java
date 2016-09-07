@@ -12,7 +12,6 @@ import be.tarsos.dsp.pitch.PitchProcessor;
  */
 /**
  * Dient als Stimmlageerkennung, z.B. für Singprogramme
- *
  * @author i01frajos445
  */
 public class PitchDetector implements PitchDetectionHandler {

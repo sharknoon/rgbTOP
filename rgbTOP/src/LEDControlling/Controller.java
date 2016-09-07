@@ -12,11 +12,12 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
-
+import com.pi4j.wiringpi.Gpio;
 
 /**
  * <p>
- * This example code demonstrates how to setup a hardware supported PWM pin GpioProvider
+ * This example code demonstrates how to setup a hardware supported PWM pin
+ * GpioProvider
  * </p>
  *
  * @author Robert Savage
@@ -24,15 +25,14 @@ import com.pi4j.util.Console;
 public class Controller {
 
     /**
-     * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ]
-     * This example program accepts an optional argument for specifying the GPIO pin (by number)
-     * to use with this GPIO listener example. If no argument is provided, then GPIO #1 will be used.
-     * -- EXAMPLE: "--pin 4" or "-p 0".
+     * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ] This example program accepts an
+     * optional argument for specifying the GPIO pin (by number) to use with
+     * this GPIO listener example. If no argument is provided, then GPIO #1 will
+     * be used. -- EXAMPLE: "--pin 4" or "-p 0".
      *
      * @param args
-     * @throws InterruptedException
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
 
         // create Pi4J console wrapper/helper
         // (This is a utility class to abstract some of the boilerplate code)
@@ -52,37 +52,46 @@ public class Controller {
         //
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
-        Pin pin = CommandArgumentParser.getPin(
-                RaspiPin.class,    // pin provider class to obtain pin instance from
-                RaspiPin.GPIO_01,  // default pin if no pin argument found
+        Pin pinRedLED = CommandArgumentParser.getPin(
+                RaspiPin.class, // pin provider class to obtain pin instance from
+                RaspiPin.GPIO_01, // default pin if no pin argument found
                 args);             // argument array to search in
-
-        GpioPinPwmOutput pwm = gpio.provisionPwmOutputPin(pin);
+        Pin pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_23, args);
+        Pin pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
+        
+        GpioPinPwmOutput pwmRedLED = gpio.provisionPwmOutputPin(pinRedLED);
+        GpioPinPwmOutput pwmGreenLED = gpio.provisionPwmOutputPin(pinGreenLED);
+        GpioPinPwmOutput pwmBlueLED = gpio.provisionPwmOutputPin(pinBlueLED);
 
         // you can optionally use these wiringPi methods to further customize the PWM generator
         // see: http://wiringpi.com/reference/raspberry-pi-specifics/
-        com.pi4j.wiringpi.Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
-        com.pi4j.wiringpi.Gpio.pwmSetRange(1000);
-        com.pi4j.wiringpi.Gpio.pwmSetClock(500);
+        Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
+        Gpio.pwmSetRange(1000);
+        Gpio.pwmSetClock(500);
 
         // set the PWM rate to 500
-        pwm.setPwm(500);
-        console.println("PWM rate is: " + pwm.getPwm());
+        pwmRedLED.setPwm(500);
+        pwmGreenLED.setPwm(500);
+        pwmBlueLED.setPwm(500);
+        console.println("PWM rate is: " + pwmRedLED.getPwm());
 
         console.println("Press ENTER to set the PWM to a rate of 250");
         System.console().readLine();
 
         // set the PWM rate to 250
-        pwm.setPwm(250);
-        console.println("PWM rate is: " + pwm.getPwm());
-
+        pwmRedLED.setPwm(250);
+        pwmGreenLED.setPwm(250);
+        pwmBlueLED.setPwm(250);
+        console.println("PWM rate is: " + pwmRedLED.getPwm());
 
         console.println("Press ENTER to set the PWM to a rate to 0 (stop PWM)");
         System.console().readLine();
 
         // set the PWM rate to 0
-        pwm.setPwm(0);
-        console.println("PWM rate is: " + pwm.getPwm());
+        pwmRedLED.setPwm(0);
+        pwmGreenLED.setPwm(0);
+        pwmBlueLED.setPwm(0);
+        console.println("PWM rate is: " + pwmRedLED.getPwm());
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)

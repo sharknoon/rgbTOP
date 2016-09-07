@@ -25,11 +25,11 @@ import javafx.scene.paint.Color;
  */
 public class LEDs {
 
-    private Percentage brightnessRedLED;//From 0 - PWMRange (default 1024, here 1000)
-    private Percentage brightnessGreenLED;
-    private Percentage brightnessBlueLED;
+    private Percentage brightnessRedLED;//From 0 - 100
+    private Percentage brightnessGreenLED;//From 0 - 100
+    private Percentage brightnessBlueLED;//From 0 - 100
 
-    private Percentage overallBrightness;
+    private Percentage overallBrightness;//From 0 - 100
 
     private GpioPinPwmOutput pwmRedLED;
     private GpioPinPwmOutput pwmGreenLED;
@@ -39,7 +39,7 @@ public class LEDs {
     private static final float PWM_RANGE = 1000;
 
     public LEDs(String[] args) {
-        this.start(args);
+       start(args);
     }
 
     /**
@@ -48,14 +48,14 @@ public class LEDs {
      * @param brightness 0-100
      */
     public void setBrightness(Percentage brightness) {
-        this.overallBrightness = brightness;
+        overallBrightness = brightness;
         refresh();
     }
 
     /**
      * Sets the resulting Color of the three LEDs
      *
-     * @param color
+     * @param color The Color class from JavaFX
      */
     public void setColor(Color color) {
         brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
@@ -64,8 +64,13 @@ public class LEDs {
         refresh();
     }
 
+    /**
+     * Sets the Brightness of all LEDs (check Static Methods of Percentage!!) and the resulting Color of the three LEDs
+     * @param color
+     * @param brightness 
+     */
     public void setColorAndBrightness(Color color, Percentage brightness) {
-        this.overallBrightness = brightness;
+        overallBrightness = brightness;
         brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
         brightnessGreenLED = Percentage.getPercent((byte) Math.round(color.getGreen() * 100));
         brightnessBlueLED = Percentage.getPercent((byte) Math.round(color.getBlue() * 100));
@@ -88,11 +93,11 @@ public class LEDs {
      * @param args
      */
     private void start(String[] args) {
-        this.brightnessRedLED = Percentage.get0Percent();
-        this.brightnessGreenLED = Percentage.get0Percent();
-        this.brightnessBlueLED = Percentage.get0Percent();
+        brightnessRedLED = Percentage.get0Percent();
+        brightnessGreenLED = Percentage.get0Percent();
+        brightnessBlueLED = Percentage.get0Percent();
 
-        this.overallBrightness = Percentage.get100Percent();
+        overallBrightness = Percentage.get100Percent();
 
         // create Pi4J console wrapper/helper
         // (This is a utility class to abstract some of the boilerplate code)
@@ -135,30 +140,25 @@ public class LEDs {
         pwmBlueLED.setPwm(500);
         console.println("PWM rate is: " + pwmRedLED.getPwm());
 
-        console.println("Press ENTER to set the PWM to a rate of 250");
+        console.println("Press ENTER to set Color to Crimson");
         System.console().readLine();
 
-        // set the PWM rate to 250
-        pwmRedLED.setPwm(250);
-        pwmGreenLED.setPwm(250);
-        pwmBlueLED.setPwm(250);
-        console.println("PWM rate is: " + pwmRedLED.getPwm());
+        setColor(Color.CRIMSON);
+        console.println("Red   PWM rate is: " + pwmRedLED.getPwm());
+        console.println("Green PWM rate is: " + pwmGreenLED.getPwm());
+        console.println("Vlue  PWM rate is: " + pwmBlueLED.getPwm());
 
-        console.println("Press ENTER to set the PWM to a rate to 0 (stop PWM)");
+        console.println("Press ENTER to set the Brightness to 50%");
         System.console().readLine();
 
-        // set the PWM rate to 0
-        pwmRedLED.setPwm(0);
-        pwmGreenLED.setPwm(0);
-        pwmBlueLED.setPwm(0);
-        console.println("PWM rate is: " + pwmRedLED.getPwm());
+        setBrightness(Percentage.get50Percent());
+        console.println("Red   PWM rate is: " + pwmRedLED.getPwm());
+        console.println("Green PWM rate is: " + pwmGreenLED.getPwm());
+        console.println("Vlue  PWM rate is: " + pwmBlueLED.getPwm());
 
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
     }
 
-    public static void main(String[] args) {
-        LEDs controller = new LEDs(args);
-    }
 }

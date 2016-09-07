@@ -13,6 +13,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.wiringpi.Gpio;
+import javafx.scene.paint.Color;
 
 /**
  * <p>
@@ -22,7 +23,61 @@ import com.pi4j.wiringpi.Gpio;
  *
  * @author Robert Savage
  */
-public class Controller {
+public class LEDs {
+
+    private Percentage brightnessRedLED;//From 0 - PWMRange (default 1024, here 1000)
+    private Percentage brightnessGreenLED;
+    private Percentage brightnessBlueLED;
+
+    private Percentage overallBrightness;
+
+    private GpioPinPwmOutput pwmRedLED;
+    private GpioPinPwmOutput pwmGreenLED;
+    private GpioPinPwmOutput pwmBlueLED;
+
+    //Settings
+    private static final float PWM_RANGE = 1000;
+
+    public LEDs(String[] args) {
+        this.start(args);
+    }
+
+    /**
+     * Sets the Brightness of all LEDs from 0% to 100%
+     *
+     * @param brightness 0-100
+     */
+    public void setBrightness(Percentage brightness) {
+        this.overallBrightness = brightness;
+        refresh();
+    }
+
+    /**
+     * Sets the resulting Color of the three LEDs
+     *
+     * @param color
+     */
+    public void setColor(Color color) {
+        brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
+        brightnessGreenLED = Percentage.getPercent((byte) Math.round(color.getGreen() * 100));
+        brightnessBlueLED = Percentage.getPercent((byte) Math.round(color.getBlue() * 100));
+        refresh();
+    }
+
+    public void setColorAndBrightness(Color color, Percentage brightness) {
+        this.overallBrightness = brightness;
+        brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
+        brightnessGreenLED = Percentage.getPercent((byte) Math.round(color.getGreen() * 100));
+        brightnessBlueLED = Percentage.getPercent((byte) Math.round(color.getBlue() * 100));
+        refresh();
+    }
+
+    private void refresh() {
+        float multiplicator = ((float) PWM_RANGE / (float) 100) * overallBrightness.getMultiplierOfThisPercentage();
+        pwmRedLED.setPwm((int) Math.round((float) brightnessRedLED.get() * multiplicator));
+        pwmGreenLED.setPwm((int) Math.round((float) brightnessGreenLED.get() * multiplicator));
+        pwmBlueLED.setPwm((int) Math.round((float) brightnessBlueLED.get() * multiplicator));
+    }
 
     /**
      * [ARGUMENT/OPTION "--pin (#)" | "-p (#)" ] This example program accepts an
@@ -32,7 +87,12 @@ public class Controller {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    private void start(String[] args) {
+        this.brightnessRedLED = Percentage.get0Percent();
+        this.brightnessGreenLED = Percentage.get0Percent();
+        this.brightnessBlueLED = Percentage.get0Percent();
+
+        this.overallBrightness = Percentage.get100Percent();
 
         // create Pi4J console wrapper/helper
         // (This is a utility class to abstract some of the boilerplate code)
@@ -58,15 +118,15 @@ public class Controller {
                 args);             // argument array to search in
         Pin pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_23, args);
         Pin pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
-        
-        GpioPinPwmOutput pwmRedLED = gpio.provisionPwmOutputPin(pinRedLED);
-        GpioPinPwmOutput pwmGreenLED = gpio.provisionPwmOutputPin(pinGreenLED);
-        GpioPinPwmOutput pwmBlueLED = gpio.provisionPwmOutputPin(pinBlueLED);
+
+        pwmRedLED = gpio.provisionPwmOutputPin(pinRedLED);
+        pwmGreenLED = gpio.provisionPwmOutputPin(pinGreenLED);
+        pwmBlueLED = gpio.provisionPwmOutputPin(pinBlueLED);
 
         // you can optionally use these wiringPi methods to further customize the PWM generator
         // see: http://wiringpi.com/reference/raspberry-pi-specifics/
         Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
-        Gpio.pwmSetRange(1000);
+        Gpio.pwmSetRange((int) LEDs.PWM_RANGE);
         Gpio.pwmSetClock(500);
 
         // set the PWM rate to 500
@@ -96,5 +156,9 @@ public class Controller {
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         gpio.shutdown();
+    }
+
+    public static void main(String[] args) {
+        LEDs controller = new LEDs(args);
     }
 }

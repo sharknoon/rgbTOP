@@ -18,10 +18,9 @@ public class SilenceDetector implements AudioProcessor {
 
     private final be.tarsos.dsp.SilenceDetector silenceDetector;
     private Controller controller;
-    private long time = 0;
 
     //Settings
-    private static final double THRESHOLD = -75;
+    private static final double THRESHOLD = -75;//Default -75
     private static final char TIMETOCHANGE = 5000;//when in TIMETOCHANGE milisecs 85% of the loudness above THRESHOLD is -> loud
 
     public SilenceDetector(Controller pController) {
@@ -29,7 +28,7 @@ public class SilenceDetector implements AudioProcessor {
         Detector dec = new Detector(Detector.MAINMIC);
 
         // add a processor, handle percussion event.
-        silenceDetector = new be.tarsos.dsp.SilenceDetector(THRESHOLD, false);
+        silenceDetector = new be.tarsos.dsp.SilenceDetector();
         dec.dispatcher.addAudioProcessor(silenceDetector);
         dec.dispatcher.addAudioProcessor(this);
 
@@ -37,29 +36,29 @@ public class SilenceDetector implements AudioProcessor {
         new Thread(dec.dispatcher, "Audio dispatching").start();
     }
 
-    boolean silence = true;
+    private long timeToReach = 0;
+    private int amountDecibel = 0;
+    private int counter = 0;
+    private boolean silence = true;
 
     @Override
     public boolean process(AudioEvent audioEvent) {
-        double spl;
-        if ((spl = silenceDetector.currentSPL()) > THRESHOLD) {
-            if (silence) {//When prev. state was silent
-                System.out.println("Changed to Loudness (" + spl + " db)");
-                time = System.currentTimeMillis();
-            }
-            if ((time + TIMETOCHANGE) < System.currentTimeMillis()) {
+        if (System.currentTimeMillis() > timeToReach) {
+            int averageDecibel = (int) Math.round((double) amountDecibel / (double) counter);
+            if ((averageDecibel > THRESHOLD) && silence) {//Lauter als Schwelle und davor war Stille
+                silence = false;
+                controller.silenceChanged(silence);
+            } else if ((averageDecibel < THRESHOLD) && !silence) {//Leiser als Schwelle und davor war Lautheit
+                silence = true;
                 controller.silenceChanged(silence);
             }
-            silence = false;
+            System.out.println("Average DB: " + averageDecibel + ", Threshold: " + THRESHOLD);
+            counter = 0;
+            amountDecibel = 0;
+            timeToReach = System.currentTimeMillis() + TIMETOCHANGE;
         } else {
-            if (!silence) {
-                System.out.println("Changed to Silence (" + spl + " db)");
-                time = System.currentTimeMillis();
-            }
-            if ((time + TIMETOCHANGE) < System.currentTimeMillis()) {
-                controller.silenceChanged(silence);
-            }
-            silence = true;
+            counter++;
+            amountDecibel += silenceDetector.currentSPL();
         }
         return true;
     }

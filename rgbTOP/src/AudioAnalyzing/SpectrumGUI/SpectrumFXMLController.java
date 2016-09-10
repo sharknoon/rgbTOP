@@ -5,13 +5,22 @@
  */
 package AudioAnalyzing.SpectrumGUI;
 
+import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javax.swing.BorderFactory;
 
 /**
  * FXML Controller class
@@ -23,10 +32,10 @@ public class SpectrumFXMLController implements Initializable {
     @FXML
     VBox vbox;
 
+    ArrayList<ProgressBar> progressBars = new ArrayList<>();
+
     //Settings
     int amountBars = 10;
-
-    ArrayList<ProgressBar> progressBars = new ArrayList<>();
 
     /**
      * Initializes the controller class.
@@ -36,11 +45,7 @@ public class SpectrumFXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        for (int i = 0; i < amountBars; i++) {
-            ProgressBar pb = new ProgressBar(0);
-            progressBars.add(pb);
-            vbox.getChildren().add(pb);
-        }
+        redoProgressBars(amountBars);
     }
 
     /**
@@ -50,11 +55,26 @@ public class SpectrumFXMLController implements Initializable {
      */
     public void setAmplitudes(double[] amplitudes) {
         if (amplitudes.length != amountBars) {
-            System.err.println("Fehler, zuwenig oder zu viele Amplituden angegeben: " + amplitudes.length + " (ArrayLength) != " + amountBars + " (max Allowed Bars)");
+            Platform.runLater(() -> {
+                redoProgressBars(amplitudes.length);
+            });
             return;
         }
         for (int i = 0; i < amountBars; i++) {
             progressBars.get(i).setProgress(amplitudes[i]);
+        }
+    }
+
+    public void redoProgressBars(int newAmount) {
+        amountBars = newAmount;
+        vbox.getChildren().clear();
+
+        progressBars.clear();
+        for (int i = 0; i < amountBars; i++) {
+            ProgressBar pb = new ProgressBar(0);
+            pb.setPrefWidth(600);
+            progressBars.add(pb);
+            vbox.getChildren().add(pb);
         }
     }
 

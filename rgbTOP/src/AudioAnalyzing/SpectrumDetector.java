@@ -33,7 +33,7 @@ public class SpectrumDetector implements PitchDetectionHandler {
     SpectrumFXMLController controller;
 
     //Settings
-    private static final int AMOUNT_OF_AMPLITUDE_VALUES = 10;
+    private static final int AMOUNT_OF_AMPLITUDE_VALUES = 30;
 
     public SpectrumDetector(SpectrumFXMLController pController) {
         controller = pController;

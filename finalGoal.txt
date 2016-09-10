@@ -1,0 +1,5 @@
+- farbenwechsel bei beat
+- 25% helligkeit bei silence
+- 50% Helligkeit bei Normal
+- 75% Helligkeit bei Bass ODER Beat
+- 100% Helligkeit bei bass und Beat

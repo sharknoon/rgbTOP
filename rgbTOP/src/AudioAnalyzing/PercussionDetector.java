@@ -24,7 +24,7 @@ public class PercussionDetector implements OnsetHandler{
         Detector dec = new Detector(Detector.MAINMIC);        
 
         // add a processor, handle percussion event.
-        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.defaultSampleRate, Detector.defaultBufferSize, Detector.defaultOverlap, this);//EVTL noch sensitivity und threshold
+        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.defaultSampleRate, Detector.defaultBufferSize, this,0,0);//EVTL noch sensitivity und threshold
         dec.dispatcher.addAudioProcessor(pod);
 
         // run the dispatcher (on a new thread).

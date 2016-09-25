@@ -11,6 +11,6 @@ package Interfaces;
  */
 public interface BassDetector {
     
-    public void bassChanged(boolean newBass);
+    public void bassDropped(int bass);
     
 }

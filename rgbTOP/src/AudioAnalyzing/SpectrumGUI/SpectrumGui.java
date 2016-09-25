@@ -5,6 +5,7 @@
  */
 package AudioAnalyzing.SpectrumGUI;
 
+import AudioAnalyzing.Detector;
 import AudioAnalyzing.SpectrumDetector;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -23,12 +24,8 @@ public class SpectrumGui extends Application {
     SpectrumFXMLController controller;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        System.out.println(getClass().getResource("SpectrumFXML.fxml").toExternalForm());
-        
+    public void start(Stage primaryStage) throws Exception {  
         FXMLLoader loader = new FXMLLoader(getClass().getResource("SpectrumFXML.fxml"));//Hier holt er sich die FXML Datei
-
         Parent root = (Parent) loader.load();//Aus der Datei holt er sich das Grundlayout
         controller = loader.getController();//Aus der Datei holt er sich die Controllerreferenz
 
@@ -37,7 +34,10 @@ public class SpectrumGui extends Application {
         });
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        SpectrumDetector dec = new SpectrumDetector(controller);
+
+        Detector dec = new Detector(Detector.MAINMIC);
+        SpectrumDetector sped = dec.startDetector(controller, 0)
+        
     }
 
     public static void main(String[] args) {

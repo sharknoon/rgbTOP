@@ -1,6 +1,8 @@
 package Main;
 
+import AudioAnalyzing.Detector;
 import AudioAnalyzing.SilenceDetector;
+import AudioAnalyzing.SpectrumDetector;
 import LEDControlling.LEDs;
 
 /*
@@ -16,7 +18,9 @@ public class Controller implements Interfaces.SilenceDetector, Interfaces.BassDe
 
     public Controller(String[] args) {
         //LEDs leds = new LEDs(args);
-        SilenceDetector spd = new SilenceDetector(this);
+        Detector dec = new Detector(Detector.MAINMIC);
+        SpectrumDetector std = (SpectrumDetector) dec.startDetector(this, Detector.SPECTRUMDETECTOR);
+        SilenceDetector sld = (SilenceDetector) dec.startDetector(this, Detector.SILENCEDETECTOR);
     }
 
     @Override
@@ -29,11 +33,12 @@ public class Controller implements Interfaces.SilenceDetector, Interfaces.BassDe
     }
 
     @Override
-    public void bassChanged(boolean newBass) {
-        
+    public void bassDropped(int bass) {
+        System.out.println("Bass: " + bass);
     }
 
     public static void main(String[] args) {
         Controller controller = new Controller(args);
     }
+
 }

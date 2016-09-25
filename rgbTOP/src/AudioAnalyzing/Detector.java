@@ -5,6 +5,7 @@ package AudioAnalyzing;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import Main.Controller;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import javax.sound.sampled.AudioFormat;
@@ -24,8 +25,11 @@ public class Detector {
 
     public AudioDispatcher dispatcher;
 
-    static int MAINMIC = 0;
-    static int MAINSPEAKER = 1;
+    public static int MAINMIC = 0;
+    public static int MAINSPEAKER = 1;
+
+    public static int SILENCEDETECTOR = 0;
+    public static int SPECTRUMDETECTOR = 1;
 
     //Settings
     static float defaultSampleRate = 44100;
@@ -45,6 +49,15 @@ public class Detector {
         this.bufferSize = pBufferSize;
         this.overlap = pOverlap;
         this.start(mode);
+    }
+
+    public Object startDetector(Controller controller, int detector) {
+        if (detector == 0) {
+            return new SilenceDetector(controller, this);
+        } else if (detector == 1) {
+            return new SpectrumDetector(controller, this);
+        }
+        return null;
     }
 
     public void start(int mode) {

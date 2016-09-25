@@ -2,6 +2,7 @@ package AudioAnalyzing;
 
 import AudioAnalyzing.SpectrumGUI.SpectrumFXMLController;
 import AudioAnalyzing.SpectrumGUI.SpectrumGui;
+import Main.Controller;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
@@ -10,10 +11,6 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import be.tarsos.dsp.util.PitchConverter;
 import be.tarsos.dsp.util.fft.FFT;
-import com.sun.javafx.application.LauncherImpl;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import javafx.application.Application;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,16 +25,11 @@ import javafx.application.Application;
  */
 public class SpectrumDetector implements PitchDetectionHandler {
 
-    SpectrumGui gui;
-
-    SpectrumFXMLController controller;
-
     //Settings
     private static final int AMOUNT_OF_AMPLITUDE_VALUES = 30;
 
-    public SpectrumDetector(SpectrumFXMLController pController) {
-        controller = pController;
-        Detector dec = new Detector(Detector.MAINMIC, Detector.defaultSampleRate, Detector.defaultBufferSize * 8, 768 * 4);
+    public SpectrumDetector(Controller controller, Detector dec) {
+        //Detector dec = new Detector(Detector.MAINMIC, Detector.defaultSampleRate, Detector.defaultBufferSize * 8, 768 * 4);
 
         // add a processor, handle pitch event.
         dec.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, dec.sampleRate, dec.bufferSize, this));//EVTL algorthmus ändern
@@ -74,13 +66,15 @@ public class SpectrumDetector implements PitchDetectionHandler {
                 double[] finished = new double[AMOUNT_OF_AMPLITUDE_VALUES];
                 if (maxAmplitude != 0) {
                     for (int i = 0; i < correctedAmplitudes.length; i++) {
-                        finished[i] = (Math.log1p(correctedAmplitudes[i] / maxAmplitude) / Math.log1p(1.0000001) * 1);
+                        finished[i] = (Math.log1p(correctedAmplitudes[i] / maxAmplitude) / Math.log1p(1.0000001) * 1) * 4;
                     }
                 } else {
                     System.err.print("Max Amplitude was null, ignoring line");
                 }
-                controller.setAmplitudes(finished);
-                System.out.println();
+                System.out.println("Amplitude: "+finished[0]);
+                if (finished[0] > 0.75) {
+                    controller.bassDropped((int) (finished[0] * 100));
+                }
 
                 return true;
             }
@@ -115,15 +109,9 @@ public class SpectrumDetector implements PitchDetectionHandler {
         return bin;
     }
 
-    double pitch = 0;
-
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        if (pitchDetectionResult.isPitched()) {
-            pitch = pitchDetectionResult.getPitch();
-        } else {
-            pitch = -1;
-        }
+
     }
 
 }

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LEDControlling;
 
 /**
  *
@@ -18,12 +17,13 @@ public class Percentage {
     }
 
     /**
-     * 
+     *
      * @param value A int value between 0 and 100
-     * @return 
+     * @return
      */
     public static Percentage getPercent(byte value) {
         if (value > 100 || value < 0) {
+            System.err.println("Fehler: Wert nicht zwischen 0 und 100: " + value);
             return null;
         }
         return new Percentage((byte) value);
@@ -72,8 +72,8 @@ public class Percentage {
     public byte get() {
         return percentage;
     }
-    
-    public float getMultiplierOfThisPercentage(){
+
+    public float getMultiplierOfThisPercentage() {
         return (float) percentage / (float) 100;
     }
 

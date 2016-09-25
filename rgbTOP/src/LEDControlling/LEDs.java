@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LEDControlling;
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinPwmOutput;
@@ -13,7 +11,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.wiringpi.Gpio;
-import javafx.scene.paint.Color;
+import java.awt.Color;
 
 /**
  * <p>
@@ -36,10 +34,14 @@ public class LEDs {
     private GpioPinPwmOutput pwmBlueLED;
 
     //Settings
-    private static final float PWM_RANGE = 1000;
+    private static final float PWM_RANGE = 1024;
+
+    public static void main(String[] args) {
+        LEDs leds = new LEDs(args);
+    }
 
     public LEDs(String[] args) {
-       start(args);
+        start(args);
     }
 
     /**
@@ -48,8 +50,14 @@ public class LEDs {
      * @param brightness 0-100
      */
     public void setBrightness(Percentage brightness) {
+        setBrightness(brightness, true);
+    }
+
+    private void setBrightness(Percentage brightness, boolean refresh) {
         overallBrightness = brightness;
-        refresh();
+        if (refresh) {
+            refresh();
+        }
     }
 
     /**
@@ -58,30 +66,46 @@ public class LEDs {
      * @param color The Color class from JavaFX
      */
     public void setColor(Color color) {
-        brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
-        brightnessGreenLED = Percentage.getPercent((byte) Math.round(color.getGreen() * 100));
-        brightnessBlueLED = Percentage.getPercent((byte) Math.round(color.getBlue() * 100));
-        refresh();
+        setColor(color, true);
+    }
+
+    private void setColor(Color color, boolean refresh) {
+        brightnessRedLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getRed())));
+        brightnessGreenLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getGreen())));
+        brightnessBlueLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getBlue())));
+        if (refresh) {
+            refresh();
+        }
     }
 
     /**
-     * Sets the Brightness of all LEDs (check Static Methods of Percentage!!) and the resulting Color of the three LEDs
+     * Sets the Brightness of all LEDs (check Static Methods of Percentage!!)
+     * and the resulting Color of the three LEDs
+     *
      * @param color
-     * @param brightness 
+     * @param brightness
      */
     public void setColorAndBrightness(Color color, Percentage brightness) {
-        overallBrightness = brightness;
-        brightnessRedLED = Percentage.getPercent((byte) Math.round(color.getRed() * 100));
-        brightnessGreenLED = Percentage.getPercent((byte) Math.round(color.getGreen() * 100));
-        brightnessBlueLED = Percentage.getPercent((byte) Math.round(color.getBlue() * 100));
-        refresh();
+        setColor(color, false);
+        setBrightness(brightness, true);
     }
 
     private void refresh() {
-        float multiplicator = ((float) PWM_RANGE / (float) 100) * overallBrightness.getMultiplierOfThisPercentage();
-        pwmRedLED.setPwm((int) Math.round((float) brightnessRedLED.get() * multiplicator));
-        pwmGreenLED.setPwm((int) Math.round((float) brightnessGreenLED.get() * multiplicator));
-        pwmBlueLED.setPwm((int) Math.round((float) brightnessBlueLED.get() * multiplicator));
+        pwmRedLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessRedLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
+        pwmGreenLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessGreenLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
+        pwmBlueLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessBlueLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
+        System.out.println("Red   PWM rate is: " + pwmRedLED.getPwm() + " of " + PWM_RANGE);
+        System.out.println("Green PWM rate is: " + pwmGreenLED.getPwm() + " of " + PWM_RANGE);
+        System.out.println("Blue  PWM rate is: " + pwmBlueLED.getPwm() + " of " + PWM_RANGE);
+    }
+
+    private double map(double srcMin, double srcMax, double tgtMin, double tgtMax, double value) {
+        double srcDifference = srcMax - srcMin;
+        double tgtDifference = tgtMax - tgtMin;
+        value -= srcMin;
+        value /= srcDifference;
+        value *= tgtDifference;
+        return value += tgtMin;
     }
 
     /**
@@ -119,10 +143,10 @@ public class LEDs {
         // has been provided, then lookup the pin by address
         Pin pinRedLED = CommandArgumentParser.getPin(
                 RaspiPin.class, // pin provider class to obtain pin instance from
-                RaspiPin.GPIO_01, // default pin if no pin argument found
+                RaspiPin.GPIO_23, // default pin if no pin argument found
                 args);             // argument array to search in
-        Pin pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_23, args);
-        Pin pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
+        Pin pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
+        Pin pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_26, args);
 
         pwmRedLED = gpio.provisionPwmOutputPin(pinRedLED);
         pwmGreenLED = gpio.provisionPwmOutputPin(pinGreenLED);
@@ -130,34 +154,36 @@ public class LEDs {
 
         // you can optionally use these wiringPi methods to further customize the PWM generator
         // see: http://wiringpi.com/reference/raspberry-pi-specifics/
-        Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_MS);
-        Gpio.pwmSetRange((int) LEDs.PWM_RANGE);
+        Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_BAL);
+        Gpio.pwmSetRange((int) PWM_RANGE);
         Gpio.pwmSetClock(500);
 
-        // set the PWM rate to 500
-        pwmRedLED.setPwm(500);
-        pwmGreenLED.setPwm(500);
-        pwmBlueLED.setPwm(500);
-        console.println("PWM rate is: " + pwmRedLED.getPwm());
+        // set the PWM rate to 512
+        setColor(Color.white);
 
-        console.println("Press ENTER to set Color to Crimson");
+        console.println("Press ENTER to set Color to Yellow");
         System.console().readLine();
 
-        setColor(Color.CRIMSON);
-        console.println("Red   PWM rate is: " + pwmRedLED.getPwm());
-        console.println("Green PWM rate is: " + pwmGreenLED.getPwm());
-        console.println("Vlue  PWM rate is: " + pwmBlueLED.getPwm());
+        setColor(Color.yellow);
 
         console.println("Press ENTER to set the Brightness to 50%");
         System.console().readLine();
 
         setBrightness(Percentage.get50Percent());
-        console.println("Red   PWM rate is: " + pwmRedLED.getPwm());
-        console.println("Green PWM rate is: " + pwmGreenLED.getPwm());
-        console.println("Vlue  PWM rate is: " + pwmBlueLED.getPwm());
 
+        console.println("Press ENTER to EXIT");
+        System.console().readLine();
+        
+        stop(gpio);
+    }
+
+    private void stop(GpioController gpio) {
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
+        pwmRedLED.setPwm(0);
+
+        pwmGreenLED.setPwm(0);
+        pwmBlueLED.setPwm(0);
         gpio.shutdown();
     }
 

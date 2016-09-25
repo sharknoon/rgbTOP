@@ -20,12 +20,11 @@ public class SilenceDetector implements AudioProcessor {
     private Controller controller;
 
     //Settings
-    private static final double THRESHOLD = -75;//Default -75
+    private static final double THRESHOLD = -65;//Default -75
     private static final char TIMETOCHANGE = 5000;//when in TIMETOCHANGE milisecs 85% of the loudness above THRESHOLD is -> loud
 
-    public SilenceDetector(Controller pController) {
+    public SilenceDetector(Controller pController, Detector dec) {
         controller = pController;
-        Detector dec = new Detector(Detector.MAINMIC);
 
         // add a processor, handle percussion event.
         silenceDetector = new be.tarsos.dsp.SilenceDetector();

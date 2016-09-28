@@ -5,7 +5,6 @@ package AudioAnalyzing;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import Main.Controller;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import javax.sound.sampled.AudioFormat;
@@ -15,7 +14,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -25,49 +23,49 @@ public class Detector {
 
     public AudioDispatcher dispatcher;
 
-    public static int MAINMIC = 0;
-    public static int MAINSPEAKER = 1;
+    public final static int SILENCEDETECTOR = 0;
+    public final static int SPECTRUMDETECTOR = 1;
 
-    public static int SILENCEDETECTOR = 0;
-    public static int SPECTRUMDETECTOR = 1;
+    //Defaults, Settings
+    static float sampleRate = 44100;
+    static int bufferSize = 512;
+    static int overlap = 0;
 
-    //Settings
-    static float defaultSampleRate = 44100;
-    static int defaultBufferSize = 512;
-    static int defaultOverlap = 0;
+    final Mixer mixer;
 
-    float sampleRate = defaultSampleRate;
-    int bufferSize = defaultBufferSize;
-    int overlap = defaultOverlap;
-
-    public Detector(int mode) {
-        this.start(mode);
+    public Detector() {
+        mixer = setMainMic();
+        init();
     }
 
-    public Detector(int mode, float pSampleRate, int pBufferSize, int pOverlap) {
-        this.sampleRate = pSampleRate;
-        this.bufferSize = pBufferSize;
-        this.overlap = pOverlap;
-        this.start(mode);
+    public Detector(float pSampleRate, int pBufferSize, int pOverlap) {
+        Detector.sampleRate = pSampleRate;
+        Detector.bufferSize = pBufferSize;
+        Detector.overlap = pOverlap;
+        mixer = setMainMic();
+        init();
     }
 
-    public Object startDetector(Controller controller, int detector) {
-        if (detector == 0) {
-            return new SilenceDetector(controller, this);
-        } else if (detector == 1) {
-            return new SpectrumDetector(controller, this);
+    public interface Method {
+
+        void execute(Object... parameters);
+    }
+
+    public void addDetector(Method toCall, int detector) {
+        switch (detector) {
+            case Detector.SILENCEDETECTOR:
+                SilenceDetector silD = new SilenceDetector(toCall, this);
+                break;
+            case Detector.SPECTRUMDETECTOR:
+                SpectrumDetector specD= new SpectrumDetector(toCall, this);
+                break;
+            default:
+                System.err.println("Fehler, Detector gibts nicht!!");
+                break;
         }
-        return null;
     }
 
-    public void start(int mode) {
-        Mixer mixer = null;
-        if (mode == MAINMIC) {
-            mixer = getMainMic();
-        } else if (mode == MAINSPEAKER) {
-            mixer = getMainSpeaker();
-        }
-
+    private void init() {
         try {
             if (dispatcher != null) {
                 dispatcher.stop();
@@ -76,17 +74,12 @@ public class Detector {
             System.out.println("Started listening with " + mixer.getMixerInfo().getName());
 
             final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, true);
-            final DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, format);
-            TargetDataLine line;
-            line = (TargetDataLine) mixer.getLine(dataLineInfo);
-            final int numberOfSamples = bufferSize;
-            line.open(format, numberOfSamples);
+            TargetDataLine line = (TargetDataLine) mixer.getLine(new DataLine.Info(TargetDataLine.class, format));
+            line.open(format, bufferSize);
             line.start();
-            final AudioInputStream stream = new AudioInputStream(line);
 
-            JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
             // create a new dispatcher
-            dispatcher = new AudioDispatcher(audioStream, bufferSize, overlap);
+            dispatcher = new AudioDispatcher(new JVMAudioInputStream(new AudioInputStream(line)), bufferSize, overlap);
             System.out.println("fertig");
 
         } catch (LineUnavailableException ex) {
@@ -96,29 +89,27 @@ public class Detector {
         }
     }
 
-    private static Mixer getMainMic() {
-        final Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
-        Mixer mixer;
-        for (final Mixer.Info mixerInfo : mixerInfos) {
-            mixer = AudioSystem.getMixer(mixerInfo);
-            if (mixer.getTargetLineInfo().length != 0) {
+    private static Mixer setMainMic() {
+        Mixer aMixer = null;
+        for (final Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+            if ((aMixer = AudioSystem.getMixer(mixerInfo)).getTargetLineInfo().length != 0) {
                 // Mixer capable of recording audio if target line length != 0
-                return mixer;
+                return aMixer;
             }
         }
-        return null;
+        System.err.println("Es konnte kein Mikrophon gefunden werden!");
+        return aMixer;
     }
 
     private static Mixer getMainSpeaker() {
-        final Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
-        Mixer mixer;
-        for (final Mixer.Info mixerInfo : mixerInfos) {
-            mixer = AudioSystem.getMixer(mixerInfo);
-            if (mixer.getSourceLineInfo().length != 0) {
+        Mixer aMixer = null;
+        for (final Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+            if ((aMixer = AudioSystem.getMixer(mixerInfo)).getSourceLineInfo().length != 0) {
                 // Mixer capable of audio play back if source line length != 0
-                return mixer;
+                return aMixer;
             }
         }
-        return null;
+        System.err.println("Es konnte kein Lautsprecher gefunden werden!");
+        return aMixer;
     }
 }

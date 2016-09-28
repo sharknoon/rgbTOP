@@ -1,8 +1,6 @@
 package AudioAnalyzing;
 
-import AudioAnalyzing.SpectrumGUI.SpectrumFXMLController;
-import AudioAnalyzing.SpectrumGUI.SpectrumGui;
-import Main.Controller;
+import AudioAnalyzing.Detector.Method;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
@@ -28,15 +26,16 @@ public class SpectrumDetector implements PitchDetectionHandler {
     //Settings
     private static final int AMOUNT_OF_AMPLITUDE_VALUES = 30;
 
-    public SpectrumDetector(Controller controller, Detector dec) {
-        //Detector dec = new Detector(Detector.MAINMIC, Detector.defaultSampleRate, Detector.defaultBufferSize * 8, 768 * 4);
+    double pitch = 0;
+
+    public SpectrumDetector(Method toCall, Detector detector) {
 
         // add a processor, handle pitch event.
-        dec.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, dec.sampleRate, dec.bufferSize, this));//EVTL algorthmus ändern
+        detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, detector.sampleRate, detector.bufferSize, this));//EVTL algorthmus ändern
 
         AudioProcessor fftProcessor = new AudioProcessor() {
-            FFT fft = new FFT(dec.bufferSize);
-            float[] amplitudes = new float[dec.bufferSize / 2];
+            FFT fft = new FFT(detector.bufferSize);
+            float[] amplitudes = new float[detector.bufferSize / 2];
 
             @Override
             public void processingFinished() {
@@ -46,12 +45,22 @@ public class SpectrumDetector implements PitchDetectionHandler {
             @Override
             public boolean process(AudioEvent audioEvent) {
                 float[] audioFloatBuffer = audioEvent.getFloatBuffer();
-                float[] transformbuffer = new float[dec.bufferSize * 2];
+                float[] transformbuffer = new float[detector.bufferSize * 2];
                 System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length);
                 fft.forwardTransform(transformbuffer);
-                fft.modulus(transformbuffer, amplitudes);
+                fft.modulus(transformbuffer, amplitudes);//Amplituden sind 2048 lang
 
-                double maxAmplitude = 11000;
+//                System.out.print("Output: Pitch: " + pitch + ", Amplituden: ");
+//                for (float amplitude : amplitudes) {
+//                    amplitude *= 1000;
+//                    amplitude = Math.round(amplitude);
+//                    amplitude /= 1000;
+//                    System.out.print(amplitude + ", ");
+//                }
+//                System.out.println();
+//                return true;
+                double amplitudeLimit = 11000;
+                double maxAmplitude = 0;
 
                 //for every pixel calculate an amplitude
                 float[] correctedAmplitudes = new float[AMOUNT_OF_AMPLITUDE_VALUES];
@@ -59,31 +68,41 @@ public class SpectrumDetector implements PitchDetectionHandler {
                 for (int i = amplitudes.length / 800; i < amplitudes.length; i++) {
                     int index = frequencyToBin(i * 44100 / (amplitudes.length * 8));
                     correctedAmplitudes[index] += amplitudes[i];
-                    //maxAmplitude = Math.max(correctedAmplitudes[index], maxAmplitude);
                 }
 
                 //draw the pixels 
                 double[] finished = new double[AMOUNT_OF_AMPLITUDE_VALUES];
-                if (maxAmplitude != 0) {
+                if (amplitudeLimit != 0) {
                     for (int i = 0; i < correctedAmplitudes.length; i++) {
-                        finished[i] = (Math.log1p(correctedAmplitudes[i] / maxAmplitude) / Math.log1p(1.0000001) * 1) * 4;
+                        finished[i] = (double) (Math.log1p(correctedAmplitudes[i] / amplitudeLimit) / Math.log1p(1.0000001) * 100);
+                        maxAmplitude = Math.max(finished[i], maxAmplitude);
                     }
+                    finished[1] = maxAmplitude;
                 } else {
                     System.err.print("Max Amplitude was null, ignoring line");
                 }
-                System.out.println("Amplitude: "+finished[0]);
-                if (finished[0] > 0.75) {
-                    controller.bassDropped((int) (finished[0] * 100));
-                }
+
+                //System.out.println("Amplitude: " + finished[0]);
+                //if (finished[0] > 0.75) {
+                //    toCall.execute((int) (finished[0] * 100));
+                //}
+                //        System.out.println("Max Ampl.: " + Math.round(maxAmplitude * 1000) + " ");
+//
+//                for (double d : finished) {
+//                    //d = Math.round(d);
+//                    System.out.print(d + ", ");
+//                }
+//                System.out.println("");
+                toCall.execute(finished);
 
                 return true;
             }
         };
 
-        dec.dispatcher.addAudioProcessor(fftProcessor);
+        detector.dispatcher.addAudioProcessor(fftProcessor);
 
         // run the dispatcher (on a new thread).
-        new Thread(dec.dispatcher, "Audio dispatching").start();
+        new Thread(detector.dispatcher, "Audio dispatching").start();
     }
 
     private int frequencyToBin(final double frequency) {
@@ -111,7 +130,7 @@ public class SpectrumDetector implements PitchDetectionHandler {
 
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-
+        this.pitch = pitchDetectionResult.getPitch();
     }
 
 }

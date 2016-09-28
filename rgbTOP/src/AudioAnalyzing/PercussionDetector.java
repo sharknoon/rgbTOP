@@ -9,8 +9,8 @@ package AudioAnalyzing;
 
 
 
-import be.tarsos.dsp.onsets.OnsetHandler;
-import be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import Libaries.TarsosDSP.be.tarsos.dsp.onsets.OnsetHandler;
+import Libaries.TarsosDSP.be.tarsos.dsp.onsets.PercussionOnsetDetector;
 
 
 
@@ -21,10 +21,10 @@ import be.tarsos.dsp.onsets.PercussionOnsetDetector;
 public class PercussionDetector implements OnsetHandler{
 
     public PercussionDetector() {
-        Detector dec = new Detector(Detector.MAINMIC);        
+        Detector dec = new Detector();        
 
         // add a processor, handle percussion event.
-        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.defaultSampleRate, Detector.defaultBufferSize, this,0,0);//EVTL noch sensitivity und threshold
+        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.sampleRate, Detector.bufferSize, this,0,0);//EVTL noch sensitivity und threshold
         dec.dispatcher.addAudioProcessor(pod);
 
         // run the dispatcher (on a new thread).

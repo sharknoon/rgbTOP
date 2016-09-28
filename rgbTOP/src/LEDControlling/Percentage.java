@@ -58,7 +58,7 @@ public class Percentage {
     }
 
     public static Percentage get50Percent() {
-        return new Percentage((byte) 500);
+        return new Percentage((byte) 50);
     }
 
     public static Percentage get75Percent() {

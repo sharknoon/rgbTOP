@@ -17,9 +17,9 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 public class PitchDetector implements PitchDetectionHandler {
 
     public PitchDetector() {
-        Detector dec = new Detector(Detector.MAINMIC, Detector.defaultSampleRate, Detector.defaultBufferSize * 2, Detector.defaultOverlap);
+        Detector dec = new Detector(Detector.sampleRate, Detector.bufferSize * 2, Detector.overlap);
         // add a processor, handle percussion event.
-        PitchProcessor pp = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.YIN, Detector.defaultSampleRate, Detector.defaultBufferSize, this);
+        PitchProcessor pp = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this);
         dec.dispatcher.addAudioProcessor(pp);
 
         // run the dispatcher (on a new thread).

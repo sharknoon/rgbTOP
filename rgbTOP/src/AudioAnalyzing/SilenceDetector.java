@@ -17,13 +17,34 @@ import Libaries.TarsosDSP.dsp.AudioProcessor;
 public class SilenceDetector implements AudioProcessor {
 
     private final Libaries.TarsosDSP.dsp.SilenceDetector silenceDetector;
-    
-    Method toCall;
 
-    //Settings
-    private static final double THRESHOLD = -65;//Default -75
-    private static final char TIMETOCHANGE = 5000;//when in TIMETOCHANGE milisecs 85% of the loudness above THRESHOLD is -> loud
+    final Method toCall;
 
+    /**
+     *
+     * @param pToCall should have a parameter called "double silence"
+     * @param detector
+     * @param threshold The threshold which defines when a buffer is silent (in
+     * dB). Normal values are [-70.0,-30.0] dB SPL.
+     * @param breakProcessingQueueOnSilence
+     */
+    public SilenceDetector(Method pToCall, Detector detector, double threshold, boolean breakProcessingQueueOnSilence) {
+        toCall = pToCall;
+
+        // add a processor, handle percussion event.
+        silenceDetector = new Libaries.TarsosDSP.dsp.SilenceDetector(threshold, breakProcessingQueueOnSilence);
+        detector.dispatcher.addAudioProcessor(silenceDetector);
+        detector.dispatcher.addAudioProcessor(this);
+
+        // run the dispatcher (on a new thread).
+        new Thread(detector.dispatcher, "Audio dispatching").start();
+    }
+
+    /**
+     *
+     * @param pToCall should have a double parameter called silence
+     * @param detector
+     */
     public SilenceDetector(Method pToCall, Detector detector) {
         toCall = pToCall;
 
@@ -36,30 +57,9 @@ public class SilenceDetector implements AudioProcessor {
         new Thread(detector.dispatcher, "Audio dispatching").start();
     }
 
-    private long timeToReach = 0;
-    private int amountDecibel = 0;
-    private int counter = 0;
-    private boolean silence = true;
-
     @Override
     public boolean process(AudioEvent audioEvent) {
-        if (System.currentTimeMillis() > timeToReach) {
-            int averageDecibel = (int) Math.round((double) amountDecibel / (double) counter);
-            if ((averageDecibel > THRESHOLD) && silence) {//Lauter als Schwelle und davor war Stille
-                silence = false;
-                toCall.execute(silence);
-            } else if ((averageDecibel < THRESHOLD) && !silence) {//Leiser als Schwelle und davor war Lautheit
-                silence = true;
-                toCall.execute(silence);
-            }
-            System.out.println("Average DB: " + averageDecibel + ", Threshold: " + THRESHOLD);
-            counter = 0;
-            amountDecibel = 0;
-            timeToReach = System.currentTimeMillis() + TIMETOCHANGE;
-        } else {
-            counter++;
-            amountDecibel += silenceDetector.currentSPL();
-        }
+        toCall.execute(silenceDetector.currentSPL());
         return true;
     }
 

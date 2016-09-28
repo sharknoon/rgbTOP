@@ -1,5 +1,6 @@
 package AudioAnalyzing;
 
+import AudioAnalyzing.Detector.Method;
 import Libaries.TarsosDSP.dsp.AudioEvent;
 import Libaries.TarsosDSP.dsp.pitch.PitchDetectionHandler;
 import Libaries.TarsosDSP.dsp.pitch.PitchDetectionResult;
@@ -16,27 +17,35 @@ import Libaries.TarsosDSP.dsp.pitch.PitchProcessor;
  */
 public class PitchDetector implements PitchDetectionHandler {
 
-    public PitchDetector() {
-        Detector dec = new Detector(Detector.sampleRate, Detector.bufferSize * 2, Detector.overlap);
+    final Method toCall;
+    
+    /**
+     * 
+     * @param pToCall should have 3 parameters "float pitch", "float probability", "double rms"
+     * @param detector 
+     */
+    public PitchDetector(Method pToCall, Detector detector) {
+        toCall = pToCall;
+        
         // add a processor, handle percussion event.
         PitchProcessor pp = new PitchProcessor(PitchProcessor.PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this);
-        dec.dispatcher.addAudioProcessor(pp);
+        detector.dispatcher.addAudioProcessor(pp);
 
         // run the dispatcher (on a new thread).
-        new Thread(dec.dispatcher, "Audio dispatching").start();
+        new Thread(detector.dispatcher, "Audio dispatching").start();
     }
 
-    public static void main(String[] args) {
-        new PitchDetector();
-    }
-
+    float pitch = 0;
+    float probability = 0;
+    double rms = 0;
+    
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
         if (pitchDetectionResult.getPitch() != -1) {
-            float pitch = pitchDetectionResult.getPitch();
-            float probability = pitchDetectionResult.getProbability();
-            double rms = audioEvent.getRMS() * 100;
-            System.out.println("Pitch angekommen: " + pitch + " Probability: " + probability + " RMS: " + rms);//Progress???
+            pitch = pitchDetectionResult.getPitch();
+            probability = pitchDetectionResult.getProbability();
+            rms = audioEvent.getRMS();// * 100 ???
+            toCall.execute(pitch, probability, rms);
         }
     }
 

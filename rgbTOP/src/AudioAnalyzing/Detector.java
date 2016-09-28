@@ -23,8 +23,10 @@ public class Detector {
 
     public AudioDispatcher dispatcher;
 
-    public final static int SILENCEDETECTOR = 0;
-    public final static int SPECTRUMDETECTOR = 1;
+    public final static int SILENCEDETECTOR = 0;//Dient als Lautstärkemessung, z.B. um vor zu lauter Lautstärke zu warnen
+    public final static int SPECTRUMDETECTOR = 1;//Dient als Spektrometer, der wie ein Equalizer alle Frequenzen anzeigt, z.B. für Basserkennung
+    public final static int PERCUSSIONDETECTOR = 2;//Dient als Schlagerkennung, z.B. beim Klatschen
+    public final static int PITCHDETECTOR = 3;//Dient als Stimmlageerkennung, z.B. für Singprogramme
 
     //Defaults, Settings
     static float sampleRate = 44100;
@@ -34,7 +36,7 @@ public class Detector {
     final Mixer mixer;
 
     public Detector() {
-        mixer = setMainMic();
+        mixer = getMainMic();
         init();
     }
 
@@ -42,7 +44,7 @@ public class Detector {
         Detector.sampleRate = pSampleRate;
         Detector.bufferSize = pBufferSize;
         Detector.overlap = pOverlap;
-        mixer = setMainMic();
+        mixer = getMainMic();
         init();
     }
 
@@ -59,8 +61,14 @@ public class Detector {
             case Detector.SPECTRUMDETECTOR:
                 SpectrumDetector specD= new SpectrumDetector(toCall, this);
                 break;
+            case Detector.PERCUSSIONDETECTOR:
+                PercussionDetector perD = new PercussionDetector(toCall, this);
+                break;
+            case Detector.PITCHDETECTOR:
+                PitchDetector pitD = new PitchDetector(toCall, this);
+                break;
             default:
-                System.err.println("Fehler, Detector gibts nicht!!");
+                System.err.println("Fehler, Detector gibts nicht, bitte nutze z.B. Detector.SILENCEDETECTOR ");
                 break;
         }
     }
@@ -89,7 +97,7 @@ public class Detector {
         }
     }
 
-    private static Mixer setMainMic() {
+    private static Mixer getMainMic() {
         Mixer aMixer = null;
         for (final Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
             if ((aMixer = AudioSystem.getMixer(mixerInfo)).getTargetLineInfo().length != 0) {

@@ -41,7 +41,7 @@
 	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-package be.tarsos.dsp.beatroot;
+package Libaries.TarsosDSP.dsp.beatroot;
 
 public class Event implements Comparable<Event>, Cloneable {
 

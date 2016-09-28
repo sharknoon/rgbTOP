@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 /**
  * Can be used to show the effect of bit depth modification in real-time.

@@ -25,4 +25,4 @@
 /**
  * Contains an MFCC implementation.
  */
-package be.tarsos.dsp.mfcc;
+package Libaries.TarsosDSP.dsp.mfcc;

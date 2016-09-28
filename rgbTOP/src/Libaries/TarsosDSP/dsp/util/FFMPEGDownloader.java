@@ -1,4 +1,4 @@
-package be.tarsos.dsp.util;
+package Libaries.TarsosDSP.dsp.util;
 
 import java.io.File;
 import java.io.FileOutputStream;

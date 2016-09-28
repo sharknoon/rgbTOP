@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.mfcc;
+package Libaries.TarsosDSP.dsp.mfcc;
 
 import java.io.*;
 import java.util.StringTokenizer;

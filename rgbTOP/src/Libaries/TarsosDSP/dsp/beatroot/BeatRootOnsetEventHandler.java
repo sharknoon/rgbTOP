@@ -21,11 +21,11 @@
 * 
 */
 
-package be.tarsos.dsp.beatroot;
+package Libaries.TarsosDSP.dsp.beatroot;
 
 import java.util.Iterator;
 
-import be.tarsos.dsp.onsets.OnsetHandler;
+import Libaries.TarsosDSP.dsp.onsets.OnsetHandler;
 
 /**
  * Forms a bridge between the BeatRoot beat tracking system and an

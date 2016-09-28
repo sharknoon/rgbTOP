@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -31,8 +31,8 @@ import java.awt.geom.Point2D;
 
 import javax.swing.SwingUtilities;
 
-import be.tarsos.dsp.ui.CoordinateSystem;
-import be.tarsos.dsp.ui.LinkedPanel;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.ui.LinkedPanel;
 
 
 /**

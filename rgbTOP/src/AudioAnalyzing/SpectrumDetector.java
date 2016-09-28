@@ -1,14 +1,14 @@
 package AudioAnalyzing;
 
 import AudioAnalyzing.Detector.Method;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchProcessor;
-import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-import be.tarsos.dsp.util.PitchConverter;
-import be.tarsos.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionHandler;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionResult;
+import Libaries.TarsosDSP.dsp.pitch.PitchProcessor;
+import Libaries.TarsosDSP.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import Libaries.TarsosDSP.dsp.util.PitchConverter;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,11 +31,11 @@ public class SpectrumDetector implements PitchDetectionHandler {
     public SpectrumDetector(Method toCall, Detector detector) {
 
         // add a processor, handle pitch event.
-        detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, detector.sampleRate, detector.bufferSize, this));//EVTL algorthmus ändern
+        detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
 
         AudioProcessor fftProcessor = new AudioProcessor() {
-            FFT fft = new FFT(detector.bufferSize);
-            float[] amplitudes = new float[detector.bufferSize / 2];
+            FFT fft = new FFT(Detector.bufferSize);
+            float[] amplitudes = new float[Detector.bufferSize / 2];
 
             @Override
             public void processingFinished() {
@@ -45,7 +45,7 @@ public class SpectrumDetector implements PitchDetectionHandler {
             @Override
             public boolean process(AudioEvent audioEvent) {
                 float[] audioFloatBuffer = audioEvent.getFloatBuffer();
-                float[] transformbuffer = new float[detector.bufferSize * 2];
+                float[] transformbuffer = new float[Detector.bufferSize * 2];
                 System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length);
                 fft.forwardTransform(transformbuffer);
                 fft.modulus(transformbuffer, amplitudes);//Amplituden sind 2048 lang
@@ -81,18 +81,7 @@ public class SpectrumDetector implements PitchDetectionHandler {
                 } else {
                     System.err.print("Max Amplitude was null, ignoring line");
                 }
-
-                //System.out.println("Amplitude: " + finished[0]);
-                //if (finished[0] > 0.75) {
-                //    toCall.execute((int) (finished[0] * 100));
-                //}
-                //        System.out.println("Max Ampl.: " + Math.round(maxAmplitude * 1000) + " ");
-//
-//                for (double d : finished) {
-//                    //d = Math.round(d);
-//                    System.out.print(d + ", ");
-//                }
-//                System.out.println("");
+                
                 toCall.execute(finished);
 
                 return true;

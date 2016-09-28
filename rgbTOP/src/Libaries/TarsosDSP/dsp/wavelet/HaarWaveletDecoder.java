@@ -21,10 +21,10 @@
 * 
 */
 
-package be.tarsos.dsp.wavelet;
+package Libaries.TarsosDSP.dsp.wavelet;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
 
 public class HaarWaveletDecoder implements AudioProcessor{
 	

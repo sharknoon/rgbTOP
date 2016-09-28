@@ -25,4 +25,4 @@
 /**
  * HaarWavelet wavelet calculation and transform.
  */
-package be.tarsos.dsp.wavelet;
+package Libaries.TarsosDSP.dsp.wavelet;

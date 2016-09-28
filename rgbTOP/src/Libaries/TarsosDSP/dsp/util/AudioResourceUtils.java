@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.util;
+package Libaries.TarsosDSP.dsp.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -25,4 +25,4 @@
 /**
  * Contains various onset detection methods.
  */
-package be.tarsos.dsp.onsets;
+package Libaries.TarsosDSP.dsp.onsets;

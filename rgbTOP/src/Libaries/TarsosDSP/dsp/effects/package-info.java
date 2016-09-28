@@ -25,4 +25,4 @@
 /**
  * Contains audio effects.
  */
-package be.tarsos.dsp.effects;
+package Libaries.TarsosDSP.dsp.effects;

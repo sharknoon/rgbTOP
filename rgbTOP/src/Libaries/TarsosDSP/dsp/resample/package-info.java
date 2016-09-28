@@ -25,4 +25,4 @@
 /**
  * A package with everything needed to resample audio.
  */
-package be.tarsos.dsp.resample;
+package Libaries.TarsosDSP.dsp.resample;

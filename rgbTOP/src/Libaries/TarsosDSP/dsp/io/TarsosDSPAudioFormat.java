@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;
 
 /*
  * Copyright (c) 1999, 2007, Oracle and/or its affiliates. All rights reserved.

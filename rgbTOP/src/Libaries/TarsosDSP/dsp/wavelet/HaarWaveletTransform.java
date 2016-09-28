@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.wavelet;
+package Libaries.TarsosDSP.dsp.wavelet;
 
 public class HaarWaveletTransform {
 		

@@ -25,4 +25,4 @@
 /**
  * Some audio generates, sine waves, noise,....
  */
-package be.tarsos.dsp.synthesis;
+package Libaries.TarsosDSP.dsp.synthesis;

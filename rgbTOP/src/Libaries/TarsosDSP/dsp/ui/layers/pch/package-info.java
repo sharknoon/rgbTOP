@@ -25,4 +25,4 @@
 /**
  * Pitch class histogram interaction.
  */
-package be.tarsos.dsp.ui.layers.pch;
+package Libaries.TarsosDSP.dsp.ui.layers.pch;

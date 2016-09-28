@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -30,12 +30,12 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
-import be.tarsos.dsp.ui.Axis;
-import be.tarsos.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.io.jvm.AudioDispatcherFactory;
+import Libaries.TarsosDSP.dsp.ui.Axis;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
 
 
 public class WaveFormLayer implements Layer {

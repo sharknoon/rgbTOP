@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 
 /**

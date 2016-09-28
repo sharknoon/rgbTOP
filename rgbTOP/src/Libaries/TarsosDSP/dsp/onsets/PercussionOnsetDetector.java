@@ -22,11 +22,11 @@
 */
 
 
-package be.tarsos.dsp.onsets;
+package Libaries.TarsosDSP.dsp.onsets;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
 
 /**
  * <p>

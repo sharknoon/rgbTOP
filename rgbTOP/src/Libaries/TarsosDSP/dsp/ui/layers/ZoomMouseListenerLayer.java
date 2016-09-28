@@ -21,14 +21,14 @@
 * 
 */
 
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import be.tarsos.dsp.ui.LinkedPanel;
+import Libaries.TarsosDSP.dsp.ui.LinkedPanel;
 
 
 

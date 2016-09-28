@@ -1,8 +1,8 @@
 package AudioAnalyzing;
 
 import AudioAnalyzing.Detector.Method;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +16,7 @@ import be.tarsos.dsp.AudioProcessor;
  */
 public class SilenceDetector implements AudioProcessor {
 
-    private final be.tarsos.dsp.SilenceDetector silenceDetector;
+    private final Libaries.TarsosDSP.dsp.SilenceDetector silenceDetector;
     
     Method toCall;
 
@@ -28,7 +28,7 @@ public class SilenceDetector implements AudioProcessor {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        silenceDetector = new be.tarsos.dsp.SilenceDetector();
+        silenceDetector = new Libaries.TarsosDSP.dsp.SilenceDetector();
         detector.dispatcher.addAudioProcessor(silenceDetector);
         detector.dispatcher.addAudioProcessor(this);
 

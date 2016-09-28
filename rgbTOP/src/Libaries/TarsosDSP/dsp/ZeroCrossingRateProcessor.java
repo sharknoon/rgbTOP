@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 /**
  * Calculates the zero crossing rate for a frame.

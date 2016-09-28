@@ -1,4 +1,4 @@
-package be.tarsos.dsp.writer;
+package Libaries.TarsosDSP.dsp.writer;
 
 import java.io.IOException;
 import java.io.InputStream;

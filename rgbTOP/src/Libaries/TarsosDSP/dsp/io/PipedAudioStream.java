@@ -21,11 +21,11 @@
 * 
 */
 
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;
 
 import java.io.InputStream;
 
-import be.tarsos.dsp.util.AudioResourceUtils;
+import Libaries.TarsosDSP.dsp.util.AudioResourceUtils;
 
 
 /**

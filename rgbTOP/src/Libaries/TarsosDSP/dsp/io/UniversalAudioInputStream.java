@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;
 
 import java.io.IOException;
 import java.io.InputStream;

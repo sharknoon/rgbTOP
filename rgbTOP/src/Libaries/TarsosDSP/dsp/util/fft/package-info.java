@@ -25,4 +25,4 @@
 /**
  * Utilities needed for FFT.
  */
-package be.tarsos.dsp.util.fft;
+package Libaries.TarsosDSP.dsp.util.fft;

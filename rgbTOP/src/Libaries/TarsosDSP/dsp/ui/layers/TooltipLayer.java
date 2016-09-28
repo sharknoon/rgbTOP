@@ -1,4 +1,4 @@
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -9,8 +9,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 
-import be.tarsos.dsp.ui.Axis;
-import be.tarsos.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.ui.Axis;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
 
 public class TooltipLayer implements Layer, MouseMotionListener,MouseListener{
 

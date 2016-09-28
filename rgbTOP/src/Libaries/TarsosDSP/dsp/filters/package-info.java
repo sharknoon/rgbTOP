@@ -25,4 +25,4 @@
 /**
  * This package contains a couple of filters (low and highpass). 
  */
-package be.tarsos.dsp.filters;
+package Libaries.TarsosDSP.dsp.filters;

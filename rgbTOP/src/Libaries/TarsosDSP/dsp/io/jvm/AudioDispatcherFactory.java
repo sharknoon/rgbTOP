@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.io.jvm;
+package Libaries.TarsosDSP.dsp.io.jvm;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -35,10 +35,10 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.io.PipedAudioStream;
-import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
-import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.io.PipedAudioStream;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFloatConverter;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioInputStream;
 
 /**
  * The Factory creates {@link AudioDispatcher} objects from various sources: the

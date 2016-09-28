@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 /**
  * Simply stops the audio processing 

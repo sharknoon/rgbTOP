@@ -1,4 +1,4 @@
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,16 +6,16 @@ import java.awt.geom.Point2D;
 import java.util.Map;
 import java.util.TreeMap;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
-import be.tarsos.dsp.ui.Axis;
-import be.tarsos.dsp.ui.CoordinateSystem;
-import be.tarsos.dsp.ui.layers.TooltipLayer.TooltipTextGenerator;
-import be.tarsos.dsp.util.PitchConverter;
-import be.tarsos.dsp.wavelet.HaarWaveletTransform;
-import be.tarsos.dsp.wavelet.lift.Daubechies4Wavelet;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.io.jvm.AudioDispatcherFactory;
+import Libaries.TarsosDSP.dsp.ui.Axis;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.ui.layers.TooltipLayer.TooltipTextGenerator;
+import Libaries.TarsosDSP.dsp.util.PitchConverter;
+import Libaries.TarsosDSP.dsp.wavelet.HaarWaveletTransform;
+import Libaries.TarsosDSP.dsp.wavelet.lift.Daubechies4Wavelet;
 
 public class Scalogram implements Layer, Runnable, TooltipTextGenerator {
 	

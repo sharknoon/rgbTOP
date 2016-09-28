@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui;
+package Libaries.TarsosDSP.dsp.ui;
 
 public class CoordinateSystem  {
 	

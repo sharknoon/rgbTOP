@@ -21,9 +21,9 @@
 * 
 */
 
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
-import be.tarsos.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioEvent;
 
 /**
  * An interface to handle detected pitch.

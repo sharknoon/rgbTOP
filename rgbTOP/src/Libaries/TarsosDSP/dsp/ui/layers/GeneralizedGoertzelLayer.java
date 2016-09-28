@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui.layers;
+package Libaries.TarsosDSP.dsp.ui.layers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -32,14 +32,14 @@ import java.util.TreeMap;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.StopAudioProcessor;
-import be.tarsos.dsp.io.jvm.AudioDispatcherFactory;
-import be.tarsos.dsp.pitch.GeneralizedGoertzel;
-import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.tarsos.dsp.ui.Axis;
-import be.tarsos.dsp.ui.CoordinateSystem;
-import be.tarsos.dsp.util.PitchConverter;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.StopAudioProcessor;
+import Libaries.TarsosDSP.dsp.io.jvm.AudioDispatcherFactory;
+import Libaries.TarsosDSP.dsp.pitch.GeneralizedGoertzel;
+import Libaries.TarsosDSP.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import Libaries.TarsosDSP.dsp.ui.Axis;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.util.PitchConverter;
 
 
 

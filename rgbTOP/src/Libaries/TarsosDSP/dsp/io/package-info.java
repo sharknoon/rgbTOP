@@ -25,4 +25,4 @@
 /**
  * Contains an abstraction of audio I/O. This is needed to support both the Java runtime and Dalvik/Android.
  */
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;

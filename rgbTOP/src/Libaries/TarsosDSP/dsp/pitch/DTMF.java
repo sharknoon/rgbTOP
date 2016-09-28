@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
 /**
  * Utility class to generate Dual-tone multi-frequency (DTMF) signaling tones.

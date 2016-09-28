@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
 import java.util.Arrays;
 

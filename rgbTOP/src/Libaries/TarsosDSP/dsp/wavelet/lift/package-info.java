@@ -25,4 +25,4 @@
 /**
  * Wavelet transforms using the lifting scheme algorithm. Implementation by Ian Kaplan
  */
-package be.tarsos.dsp.wavelet.lift;
+package Libaries.TarsosDSP.dsp.wavelet.lift;

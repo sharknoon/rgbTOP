@@ -25,4 +25,4 @@
 /**
  * Concrete implementations of the abstract audio IO for the JVM.
  */
-package be.tarsos.dsp.io.jvm;
+package Libaries.TarsosDSP.dsp.io.jvm;

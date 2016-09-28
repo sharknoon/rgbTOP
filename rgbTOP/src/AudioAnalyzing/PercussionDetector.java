@@ -7,10 +7,8 @@ package AudioAnalyzing;
  */
 
 
-
-
-import Libaries.TarsosDSP.be.tarsos.dsp.onsets.OnsetHandler;
-import Libaries.TarsosDSP.be.tarsos.dsp.onsets.PercussionOnsetDetector;
+import Libaries.TarsosDSP.dsp.onsets.OnsetHandler;
+import Libaries.TarsosDSP.dsp.onsets.PercussionOnsetDetector;
 
 
 

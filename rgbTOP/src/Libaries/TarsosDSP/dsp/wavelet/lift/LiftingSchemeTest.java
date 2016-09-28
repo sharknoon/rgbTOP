@@ -1,4 +1,4 @@
-package be.tarsos.dsp.wavelet.lift;
+package Libaries.TarsosDSP.dsp.wavelet.lift;
 
 
 class LiftingSchemeTest {

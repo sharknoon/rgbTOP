@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.io.jvm;
+package Libaries.TarsosDSP.dsp.io.jvm;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,9 +37,9 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * <p>

@@ -21,18 +21,18 @@
 * 
 */
 
-package be.tarsos.dsp.onsets;
+package Libaries.TarsosDSP.dsp.onsets;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.beatroot.Peaks;
-import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.ScaledHammingWindow;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.beatroot.Peaks;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.util.fft.ScaledHammingWindow;
 
 /**
  * <p>

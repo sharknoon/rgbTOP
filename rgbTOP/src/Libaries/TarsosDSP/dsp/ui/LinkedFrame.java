@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui;
+package Libaries.TarsosDSP.dsp.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,21 +31,21 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
-import be.tarsos.dsp.ui.ViewPort.ViewPortChangedListener;
-import be.tarsos.dsp.ui.layers.AmplitudeAxisLayer;
-import be.tarsos.dsp.ui.layers.BackgroundLayer;
-import be.tarsos.dsp.ui.layers.BeatLayer;
-import be.tarsos.dsp.ui.layers.ConstantQLayer;
-import be.tarsos.dsp.ui.layers.DragMouseListenerLayer;
-import be.tarsos.dsp.ui.layers.LegendLayer;
-import be.tarsos.dsp.ui.layers.PitchContourLayer;
-import be.tarsos.dsp.ui.layers.SelectionLayer;
-import be.tarsos.dsp.ui.layers.TimeAxisLayer;
-import be.tarsos.dsp.ui.layers.VerticalFrequencyAxisLayer;
-import be.tarsos.dsp.ui.layers.WaveFormLayer;
-import be.tarsos.dsp.ui.layers.ZoomMouseListenerLayer;
-import be.tarsos.dsp.ui.layers.pch.PitchClassHistogramLayer;
-import be.tarsos.dsp.ui.layers.pch.ScaleLayer;
+import Libaries.TarsosDSP.dsp.ui.ViewPort.ViewPortChangedListener;
+import Libaries.TarsosDSP.dsp.ui.layers.AmplitudeAxisLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.BackgroundLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.BeatLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.ConstantQLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.DragMouseListenerLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.LegendLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.PitchContourLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.SelectionLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.TimeAxisLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.VerticalFrequencyAxisLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.WaveFormLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.ZoomMouseListenerLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.pch.PitchClassHistogramLayer;
+import Libaries.TarsosDSP.dsp.ui.layers.pch.ScaleLayer;
 
 public class LinkedFrame extends JFrame implements ViewPortChangedListener {
 	private JSplitPane lastSplitPane;

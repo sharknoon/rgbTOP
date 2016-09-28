@@ -1,9 +1,9 @@
 package AudioAnalyzing;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
-import be.tarsos.dsp.pitch.PitchProcessor;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionHandler;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionResult;
+import Libaries.TarsosDSP.dsp.pitch.PitchProcessor;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

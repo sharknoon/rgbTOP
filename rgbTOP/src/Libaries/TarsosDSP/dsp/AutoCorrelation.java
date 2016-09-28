@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 public class AutoCorrelation implements AudioProcessor {
 

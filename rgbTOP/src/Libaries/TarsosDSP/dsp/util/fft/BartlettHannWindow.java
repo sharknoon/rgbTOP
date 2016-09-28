@@ -39,7 +39,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.tarsos.dsp.util.fft; 
+package Libaries.TarsosDSP.dsp.util.fft; 
 
 /**
  * A Bartlett-Hann window function.

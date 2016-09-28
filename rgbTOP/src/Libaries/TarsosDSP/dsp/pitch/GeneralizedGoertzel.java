@@ -1,11 +1,11 @@
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
-import be.tarsos.dsp.util.Complex;
-import be.tarsos.dsp.util.fft.HammingWindow;
-import be.tarsos.dsp.util.fft.WindowFunction;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.pitch.Goertzel.FrequenciesDetectedHandler;
+import Libaries.TarsosDSP.dsp.util.Complex;
+import Libaries.TarsosDSP.dsp.util.fft.HammingWindow;
+import Libaries.TarsosDSP.dsp.util.fft.WindowFunction;
 
 /**
  * <a href="http://download.springer.com/static/pdf/14/art%253A10.1186%252F1687-6180-2012-56.pdf?auth66=1409747532_189c92c583694c81b3a0095e2f665c9e&ext=.pdf">Goertzel algorithm generalized to non-integer multiples of fundamental frequency</a>

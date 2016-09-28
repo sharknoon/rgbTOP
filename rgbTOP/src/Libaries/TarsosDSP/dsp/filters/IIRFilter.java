@@ -40,10 +40,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package be.tarsos.dsp.filters;
+package Libaries.TarsosDSP.dsp.filters;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
 
 /**
  * An Infinite Impulse Response, or IIR, filter is a filter that uses a set of

@@ -21,14 +21,14 @@
 * 
 */
 
-package be.tarsos.dsp.synthesis;
+package Libaries.TarsosDSP.dsp.synthesis;
 
 import java.util.Arrays;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.EnvelopeFollower;
-import be.tarsos.dsp.pitch.PitchDetectionHandler;
-import be.tarsos.dsp.pitch.PitchDetectionResult;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.EnvelopeFollower;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionHandler;
+import Libaries.TarsosDSP.dsp.pitch.PitchDetectionResult;
 
 /**
  * This pitch detection handler replaces the audio buffer in the pipeline with a

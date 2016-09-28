@@ -21,15 +21,15 @@
 * 
 */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import be.tarsos.dsp.util.PitchConverter;
-import be.tarsos.dsp.util.fft.FFT;
-import be.tarsos.dsp.util.fft.HammingWindow;
+import Libaries.TarsosDSP.dsp.util.PitchConverter;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.util.fft.HammingWindow;
 
 /**
  * <p>

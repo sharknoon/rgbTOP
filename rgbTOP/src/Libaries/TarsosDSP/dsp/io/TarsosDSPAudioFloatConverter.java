@@ -46,14 +46,14 @@
  * CA 95054 USA or visit www.sun.com if you need additional information or
  * have any questions.
  */
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
-import be.tarsos.dsp.io.TarsosDSPAudioFormat.Encoding;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFormat.Encoding;
 
 
 /**

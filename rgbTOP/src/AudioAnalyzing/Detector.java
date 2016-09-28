@@ -5,8 +5,8 @@ package AudioAnalyzing;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.io.jvm.JVMAudioInputStream;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;

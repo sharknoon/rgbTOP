@@ -25,4 +25,4 @@
 /**
  * Contains classes imported from the Beatroot project by Simon Dixon.
  */
-package be.tarsos.dsp.beatroot;
+package Libaries.TarsosDSP.dsp.beatroot;

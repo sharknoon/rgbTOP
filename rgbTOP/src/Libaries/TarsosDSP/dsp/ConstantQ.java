@@ -75,9 +75,9 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
-import be.tarsos.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
 
 /**
  * Implementation of the Constant Q Transform.<br> References:

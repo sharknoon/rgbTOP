@@ -25,4 +25,4 @@
 /**
  * The user interface component of TarsosDSP.
  */
-package be.tarsos.dsp.ui;
+package Libaries.TarsosDSP.dsp.ui;

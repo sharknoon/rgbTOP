@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import Libaries.Pi4J.pi4j.io.gpio.GpioController;
-import Libaries.Pi4J.pi4j.io.gpio.GpioFactory;
-import Libaries.Pi4J.pi4j.io.gpio.GpioPinPwmOutput;
-import Libaries.Pi4J.pi4j.io.gpio.Pin;
-import Libaries.Pi4J.pi4j.io.gpio.RaspiPin;
-import Libaries.Pi4J.pi4j.util.CommandArgumentParser;
-import Libaries.Pi4J.pi4j.util.Console;
-import Libaries.Pi4J.pi4j.wiringpi.Gpio;
+import Libaries.Pi4J.com.pi4j.io.gpio.GpioController;
+import Libaries.Pi4J.com.pi4j.io.gpio.GpioFactory;
+import Libaries.Pi4J.com.pi4j.io.gpio.GpioPinPwmOutput;
+import Libaries.Pi4J.com.pi4j.io.gpio.Pin;
+import Libaries.Pi4J.com.pi4j.io.gpio.RaspiPin;
+import Libaries.Pi4J.com.pi4j.util.CommandArgumentParser;
+import Libaries.Pi4J.com.pi4j.util.Console;
+import Libaries.Pi4J.com.pi4j.wiringpi.Gpio;
 import java.awt.Color;
 
 /**
@@ -154,7 +154,7 @@ public class LEDs {
 
         // you can optionally use these wiringPi methods to further customize the PWM generator
         // see: http://wiringpi.com/reference/raspberry-pi-specifics/
-        Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_BAL);
+        Gpio.pwmSetMode(Libaries.Pi4J.com.pi4j.wiringpi.Gpio.PWM_MODE_BAL);
         Gpio.pwmSetRange((int) PWM_RANGE);
         Gpio.pwmSetClock(500);
 

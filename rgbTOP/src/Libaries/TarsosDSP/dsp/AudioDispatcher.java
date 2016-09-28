@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,9 +30,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
-import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFloatConverter;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFormat;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioInputStream;
 
 
 /**

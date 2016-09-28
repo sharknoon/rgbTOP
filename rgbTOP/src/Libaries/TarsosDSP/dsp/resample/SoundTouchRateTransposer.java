@@ -21,11 +21,11 @@
 * 
 */
 
-package be.tarsos.dsp.resample;
+package Libaries.TarsosDSP.dsp.resample;
 
-import be.tarsos.dsp.AudioDispatcher;
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
 
 /**
  * Currently not working sample rate transposer, works only for integer factors. 

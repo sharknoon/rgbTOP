@@ -22,12 +22,12 @@
 */
 
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 import java.util.Arrays;
 
-import be.tarsos.dsp.io.TarsosDSPAudioFloatConverter;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFloatConverter;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * An audio event flows through the processing pipeline. The object is reused for performance reasons.

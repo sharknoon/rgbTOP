@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui;
+package Libaries.TarsosDSP.dsp.ui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,7 +36,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import be.tarsos.dsp.ui.layers.Layer;
+import Libaries.TarsosDSP.dsp.ui.layers.Layer;
 
 
 public class LinkedPanel extends JPanel {

@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.ui.layers.pch;
+package Libaries.TarsosDSP.dsp.ui.layers.pch;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -33,11 +33,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import be.tarsos.dsp.ui.Axis;
-import be.tarsos.dsp.ui.CoordinateSystem;
-import be.tarsos.dsp.ui.LinkedPanel;
-import be.tarsos.dsp.ui.layers.Layer;
-import be.tarsos.dsp.ui.layers.LayerUtilities;
+import Libaries.TarsosDSP.dsp.ui.Axis;
+import Libaries.TarsosDSP.dsp.ui.CoordinateSystem;
+import Libaries.TarsosDSP.dsp.ui.LinkedPanel;
+import Libaries.TarsosDSP.dsp.ui.layers.Layer;
+import Libaries.TarsosDSP.dsp.ui.layers.LayerUtilities;
 
 
 public class ScaleLayer extends MouseAdapter implements Layer, MouseMotionListener, KeyListener {

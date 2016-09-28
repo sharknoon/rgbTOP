@@ -56,11 +56,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package be.tarsos.dsp.util.fft;
+package Libaries.TarsosDSP.dsp.util.fft;
 
 import java.util.concurrent.Future;
 
-import be.tarsos.dsp.util.ConcurrencyUtils;
+import Libaries.TarsosDSP.dsp.util.ConcurrencyUtils;
 
 
 

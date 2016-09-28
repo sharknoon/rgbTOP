@@ -1,13 +1,13 @@
-package be.tarsos.dsp.writer;
+package Libaries.TarsosDSP.dsp.writer;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import be.tarsos.dsp.AudioEvent;
-import be.tarsos.dsp.AudioProcessor;
-import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import Libaries.TarsosDSP.dsp.AudioEvent;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
+import Libaries.TarsosDSP.dsp.io.TarsosDSPAudioFormat;
 
 /**
  * This class writes the ongoing sound to an output specified by the programmer

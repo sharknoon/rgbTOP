@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 /**
  * An envelope follower follows the envelope of a signal. Sometimes the name

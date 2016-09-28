@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
 /**
  * An implementation of the AUBIO_YIN pitch tracking algorithm. See <a href=

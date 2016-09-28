@@ -1,7 +1,7 @@
-package be.tarsos.dsp;
+package Libaries.TarsosDSP.dsp;
 
 
-import be.tarsos.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.util.fft.FFT;
 
 /**
  * This is a translation of code by Stephan M. Bernsee. See the following explanation on this code:

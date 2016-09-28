@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.onsets;
+package Libaries.TarsosDSP.dsp.onsets;
 
 public interface OnsetDetector {
 	

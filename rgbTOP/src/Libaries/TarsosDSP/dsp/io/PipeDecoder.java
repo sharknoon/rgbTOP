@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.io;
+package Libaries.TarsosDSP.dsp.io;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -32,7 +32,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
-import be.tarsos.dsp.util.FFMPEGDownloader;
+import Libaries.TarsosDSP.dsp.util.FFMPEGDownloader;
 
 /**
  * <p>

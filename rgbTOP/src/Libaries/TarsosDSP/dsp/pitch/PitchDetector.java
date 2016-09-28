@@ -22,7 +22,7 @@
 */
 
 
-package be.tarsos.dsp.pitch;
+package Libaries.TarsosDSP.dsp.pitch;
 
 /**
  * A pitch detector is capable of analyzing a buffer with audio information

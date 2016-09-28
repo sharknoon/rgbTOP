@@ -21,7 +21,7 @@
 * 
 */
 
-package be.tarsos.dsp.util.fft;
+package Libaries.TarsosDSP.dsp.util.fft;
 
 public class ScaledHammingWindow extends WindowFunction {
 

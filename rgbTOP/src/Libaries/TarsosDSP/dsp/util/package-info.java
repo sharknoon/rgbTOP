@@ -25,4 +25,4 @@
 /**
  * Utility classes to handle sampled sound.
  */
-package be.tarsos.dsp.util;
+package Libaries.TarsosDSP.dsp.util;

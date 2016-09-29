@@ -40,7 +40,7 @@ public class SpectrumGui extends Application {
         Method toCall = (values) -> test((double[]) values[0]);
 
         Detector dec = new Detector();
-        dec.addDetector(toCall, Detector.SPECTRUMDETECTOR);
+        dec.addSpectrumDetector(toCall);
         
     }
 

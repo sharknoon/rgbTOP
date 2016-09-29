@@ -22,7 +22,7 @@ public class Controller {
         Method toCallOnBassDropped = (parameter) -> bassDropped((int) parameter[0]);
 
         //dec.addDetector(toCallOnSilenceChanged, Detector.SILENCEDETECTOR);
-        dec.addDetector(toCallOnBassDropped, Detector.SPECTRUMDETECTOR);
+        //dec.addDetector(toCallOnBassDropped, Detector.SPECTRUMDETECTOR);
     }
 
     public void silenceChanged(boolean newSilence) {

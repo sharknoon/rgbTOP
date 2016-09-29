@@ -6,6 +6,7 @@ package AudioAnalyzing;
  * and open the template in the editor.
  */
 import AudioAnalyzing.Detector.Method;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
 import Libaries.TarsosDSP.dsp.onsets.OnsetHandler;
 import Libaries.TarsosDSP.dsp.onsets.PercussionOnsetDetector;
 
@@ -21,38 +22,38 @@ public class PercussionDetector implements OnsetHandler {
     /**
      * @param pToCall should have those two parameters "double time", "double
      * salience"
-     * @param detector
+     * @param dispatcher
      * @param sensitivity Sensitivity of the peak detector applied to broadband
      * detection function (%). In [0-100].
      * @param threshold Energy rise within a frequency bin necessary to count
      * toward broadband total (dB). In [0-20].
      */
-    public PercussionDetector(Detector.Method pToCall, Detector detector, double sensitivity, double threshold) {
+    public PercussionDetector(Detector.Method pToCall, AudioDispatcher dispatcher, double sensitivity, double threshold) {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.sampleRate, Detector.bufferSize, this, sensitivity, threshold);
-        detector.dispatcher.addAudioProcessor(pod);
+        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.percussionSampleRate, Detector.percussionBufferSize, this, sensitivity, threshold);
+        dispatcher.addAudioProcessor(pod);
 
         // run the dispatcher (on a new thread).
-        new Thread(detector.dispatcher, "Audio dispatching").start();
+        new Thread(dispatcher, "Audio dispatching").start();
     }
 
     /**
      *
      * @param pToCall should have those two parameters "double time", "double
      * salience"
-     * @param detector
+     * @param dispatcher
      */
-    public PercussionDetector(Detector.Method pToCall, Detector detector) {
+    public PercussionDetector(Detector.Method pToCall, AudioDispatcher dispatcher) {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.sampleRate, Detector.bufferSize, Detector.overlap, this);
-        detector.dispatcher.addAudioProcessor(pod);
+        PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.percussionSampleRate, Detector.percussionBufferSize, Detector.percussionOverlap, this);
+        dispatcher.addAudioProcessor(pod);
 
         // run the dispatcher (on a new thread).
-        new Thread(detector.dispatcher, "Audio dispatching").start();
+        new Thread(dispatcher, "Audio dispatching").start();
     }
 
     @Override

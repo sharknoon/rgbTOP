@@ -21,31 +21,27 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class Detector {
 
-    public AudioDispatcher dispatcher;
+    private final Mixer mixer;
 
-    public final static int SILENCEDETECTOR = 0;//Dient als Lautstärkemessung, z.B. um vor zu lauter Lautstärke zu warnen
-    public final static int SPECTRUMDETECTOR = 1;//Dient als Spektrometer, der wie ein Equalizer alle Frequenzen anzeigt, z.B. für Basserkennung
-    public final static int PERCUSSIONDETECTOR = 2;//Dient als Schlagerkennung, z.B. beim Klatschen
-    public final static int PITCHDETECTOR = 3;//Dient als Stimmlageerkennung, z.B. für Singprogramme
-
-    //Defaults, Settings
-    static float sampleRate = 44100;
-    static int bufferSize = 512;
-    static int overlap = 0;
-
-    final Mixer mixer;
+    //Default SilenceSettings
+    static float silenceSampleRate = 44100;
+    static int silenceBufferSize = 512;
+    static int silenceOverlap = 0;
+    //Default SpectrumSettings
+    static float spectrumSampleRate = 44100;
+    static int spectrumBufferSize = 1024 * 4;
+    static int spectrumOverlap = 768 * 4;
+    //Default PercussionSettings
+    static float percussionSampleRate = 44100;
+    static int percussionBufferSize = 512;
+    static int percussionOverlap = 0;
+    //Default PitchSettings
+    static float pitchSampleRate = 44100;
+    static int pitchBufferSize = 1024;
+    static int pitchOverlap = 0;
 
     public Detector() {
         mixer = getMainMic();
-        init();
-    }
-
-    public Detector(float pSampleRate, int pBufferSize, int pOverlap) {
-        Detector.sampleRate = pSampleRate;
-        Detector.bufferSize = pBufferSize;
-        Detector.overlap = pOverlap;
-        mixer = getMainMic();
-        init();
     }
 
     public interface Method {
@@ -53,41 +49,54 @@ public class Detector {
         void execute(Object... parameters);
     }
 
-    public void addDetector(Method toCall, int detector) {
-        switch (detector) {
-            case Detector.SILENCEDETECTOR:
-                SilenceDetector silD = new SilenceDetector(toCall, this);
-                break;
-            case Detector.SPECTRUMDETECTOR:
-                SpectrumDetector specD= new SpectrumDetector(toCall, this);
-                break;
-            case Detector.PERCUSSIONDETECTOR:
-                PercussionDetector perD = new PercussionDetector(toCall, this);
-                break;
-            case Detector.PITCHDETECTOR:
-                PitchDetector pitD = new PitchDetector(toCall, this);
-                break;
-            default:
-                System.err.println("Fehler, Detector gibts nicht, bitte nutze z.B. Detector.SILENCEDETECTOR ");
-                break;
-        }
+    /**
+     * Dient als Lautstärkemessung, z.B. um vor zu lauter Lautstärke zu warnen
+     * @param toCall should have parameter called "double silence"
+     */
+    public void addSilenceDetector(Method toCall) {
+        AudioDispatcher silenceDispatcher = init(silenceSampleRate, silenceBufferSize, silenceOverlap);
+        SilenceDetector silD = new SilenceDetector(toCall, silenceDispatcher);
     }
 
-    private void init() {
-        try {
-            if (dispatcher != null) {
-                dispatcher.stop();
-            }
+    /**
+     * Dient als Spektrometer, der wie ein Equalizer alle Frequenzen anzeigt, z.B. für Basserkennung
+     * @param toCall should have one parameter "double[] spectrum"
+     */
+    public void addSpectrumDetector(Method toCall) {
+        AudioDispatcher spectrumDdispatcher = init(spectrumSampleRate, spectrumBufferSize, spectrumOverlap);
+        SpectrumDetector specD = new SpectrumDetector(toCall, spectrumDdispatcher);
+    }
 
+    /**
+     * Dient als Schlagerkennung, z.B. beim Klatschen
+     * @param toCall should have those two parameters "double time", "double salience"
+     */
+    public void addPercussionDetector(Method toCall) {
+        AudioDispatcher percussionDispatcher = init(percussionSampleRate, percussionBufferSize, percussionOverlap);
+        PercussionDetector perD = new PercussionDetector(toCall, percussionDispatcher);
+    }
+
+    /**
+     * Dient als Stimmlageerkennung, z.B. für Singprogramme
+     * @param toCall should have 3 parameters "float pitch", "float probability", "double rms"
+     */
+    public void addPitchDetector(Method toCall) {
+        AudioDispatcher pitchDispatcher = init(pitchSampleRate, pitchBufferSize, pitchOverlap);
+        PitchDetector pitD = new PitchDetector(toCall, pitchDispatcher);
+    }
+
+    private AudioDispatcher init(float sampleRate, int bufferSize, int bufferOverlap) {
+        AudioDispatcher dispatcher = null;
+        try {
             System.out.println("Started listening with " + mixer.getMixerInfo().getName());
 
-            final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, true);
+            final AudioFormat format = new AudioFormat(sampleRate, 16, 1, true, true);//Bei Spectogram bigendian = false
             TargetDataLine line = (TargetDataLine) mixer.getLine(new DataLine.Info(TargetDataLine.class, format));
             line.open(format, bufferSize);
             line.start();
 
             // create a new dispatcher
-            dispatcher = new AudioDispatcher(new JVMAudioInputStream(new AudioInputStream(line)), bufferSize, overlap);
+            dispatcher = new AudioDispatcher(new JVMAudioInputStream(new AudioInputStream(line)), bufferSize, bufferOverlap);
             System.out.println("fertig");
 
         } catch (LineUnavailableException ex) {
@@ -95,6 +104,7 @@ public class Detector {
         } catch (NullPointerException e) {
             System.err.println("Nullpointer: " + e);
         }
+        return dispatcher;
     }
 
     private static Mixer getMainMic() {

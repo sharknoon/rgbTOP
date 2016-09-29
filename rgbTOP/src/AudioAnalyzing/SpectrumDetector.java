@@ -1,14 +1,9 @@
 package AudioAnalyzing;
 
+import Libaries.TarsosDSP.dsp.spectrum.SpectrumProcessor;
 import AudioAnalyzing.Detector.Method;
-import Libaries.TarsosDSP.dsp.AudioEvent;
-import Libaries.TarsosDSP.dsp.AudioProcessor;
-import Libaries.TarsosDSP.dsp.pitch.PitchDetectionHandler;
-import Libaries.TarsosDSP.dsp.pitch.PitchDetectionResult;
-import Libaries.TarsosDSP.dsp.pitch.PitchProcessor;
-import Libaries.TarsosDSP.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
-import Libaries.TarsosDSP.dsp.util.PitchConverter;
-import Libaries.TarsosDSP.dsp.util.fft.FFT;
+import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.spectrum.SpectrumHandler;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,105 +16,48 @@ import Libaries.TarsosDSP.dsp.util.fft.FFT;
  *
  * @author i01frajos445
  */
-public class SpectrumDetector implements PitchDetectionHandler {
+public class SpectrumDetector implements SpectrumHandler {
 
-    //Settings
-    private static final int AMOUNT_OF_AMPLITUDE_VALUES = 30;
+    Method aToCall;
 
-    double pitch = 0;
-
-    public SpectrumDetector(Method toCall, Detector detector) {
+    /**
+     * 
+     * @param toCall should have one parameter "double[] spectrum"
+     * @param dispatcher
+     * @param amountOfAmplitudes default = 50
+     * @param minFrequency default = 50Hz
+     * @param maxFrequency default = 11000 Hz
+     */
+    public SpectrumDetector(Method toCall, AudioDispatcher dispatcher, int amountOfAmplitudes, double minFrequency, double maxFrequency) {
+        aToCall = toCall;
 
         // add a processor, handle pitch event.
-        detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
-
-        AudioProcessor fftProcessor = new AudioProcessor() {
-            FFT fft = new FFT(Detector.bufferSize);
-            float[] amplitudes = new float[Detector.bufferSize / 2];
-
-            @Override
-            public void processingFinished() {
-                // Do Nothing
-            }
-
-            @Override
-            public boolean process(AudioEvent audioEvent) {
-                float[] audioFloatBuffer = audioEvent.getFloatBuffer();
-                float[] transformbuffer = new float[Detector.bufferSize * 2];
-                System.arraycopy(audioFloatBuffer, 0, transformbuffer, 0, audioFloatBuffer.length);
-                fft.forwardTransform(transformbuffer);
-                fft.modulus(transformbuffer, amplitudes);//Amplituden sind 2048 lang
-
-//                System.out.print("Output: Pitch: " + pitch + ", Amplituden: ");
-//                for (float amplitude : amplitudes) {
-//                    amplitude *= 1000;
-//                    amplitude = Math.round(amplitude);
-//                    amplitude /= 1000;
-//                    System.out.print(amplitude + ", ");
-//                }
-//                System.out.println();
-//                return true;
-                double amplitudeLimit = 11000;
-                double maxAmplitude = 0;
-
-                //for every pixel calculate an amplitude
-                float[] correctedAmplitudes = new float[AMOUNT_OF_AMPLITUDE_VALUES];
-                //iterate the lage arrray and map to pixels
-                for (int i = amplitudes.length / 800; i < amplitudes.length; i++) {
-                    int index = frequencyToBin(i * 44100 / (amplitudes.length * 8));
-                    correctedAmplitudes[index] += amplitudes[i];
-                }
-
-                //draw the pixels 
-                double[] finished = new double[AMOUNT_OF_AMPLITUDE_VALUES];
-                if (amplitudeLimit != 0) {
-                    for (int i = 0; i < correctedAmplitudes.length; i++) {
-                        finished[i] = (double) (Math.log1p(correctedAmplitudes[i] / amplitudeLimit) / Math.log1p(1.0000001) * 100);
-                        maxAmplitude = Math.max(finished[i], maxAmplitude);
-                    }
-                    finished[1] = maxAmplitude;
-                } else {
-                    System.err.print("Max Amplitude was null, ignoring line");
-                }
-                
-                toCall.execute(finished);
-
-                return true;
-            }
-        };
-
-        detector.dispatcher.addAudioProcessor(fftProcessor);
+        //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
+        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.spectrumBufferSize, this, amountOfAmplitudes, minFrequency, maxFrequency));
 
         // run the dispatcher (on a new thread).
-        new Thread(detector.dispatcher, "Audio dispatching").start();
+        new Thread(dispatcher, "Audio dispatching").start();
     }
 
-    private int frequencyToBin(final double frequency) {
-        final double minFrequency = 50; // Hz
-        final double maxFrequency = 11000; // Hz
-        int bin = 0;
-        final boolean logaritmic = true;
-        if (frequency != 0 && frequency > minFrequency && frequency < maxFrequency) {
-            double binEstimate;
-            if (logaritmic) {
-                final double minCent = PitchConverter.hertzToAbsoluteCent(minFrequency);
-                final double maxCent = PitchConverter.hertzToAbsoluteCent(maxFrequency);
-                final double absCent = PitchConverter.hertzToAbsoluteCent(frequency * 2);
-                binEstimate = (absCent - minCent) / maxCent * AMOUNT_OF_AMPLITUDE_VALUES;
-            } else {
-                binEstimate = (frequency - minFrequency) / maxFrequency * AMOUNT_OF_AMPLITUDE_VALUES;
-            }
-            if (binEstimate > 700) {
-                System.out.println("Binestimate: " + binEstimate + "");
-            }
-            bin = AMOUNT_OF_AMPLITUDE_VALUES - 1 - (int) binEstimate;
-        }
-        return bin;
+    /**
+     * 
+     * @param toCall should have one parameter "double[] spectrum"
+     * @param dispatcher 
+     */
+    public SpectrumDetector(Method toCall, AudioDispatcher dispatcher) {
+        aToCall = toCall;
+
+        // add a processor, handle pitch event.
+        //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
+        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.spectrumBufferSize, this));
+
+        // run the dispatcher (on a new thread).
+        new Thread(dispatcher, "Audio dispatching").start();
     }
 
     @Override
-    public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        this.pitch = pitchDetectionResult.getPitch();
+    public void handleSpectrum(double[] spectrum) {
+        aToCall.execute(spectrum);
     }
 
 }

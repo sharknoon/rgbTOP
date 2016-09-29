@@ -10,7 +10,7 @@ import AudioAnalyzing.Detector.Method;
  */
 /**
  *
- * @author i01frajos445 
+ * @author i01frajos445
  */
 public class Controller {
 
@@ -18,23 +18,39 @@ public class Controller {
         //LEDs leds = new LEDs(args);
         Detector dec = new Detector();
 
-        Method toCallOnSilenceChanged = (parameter) -> silenceChanged((boolean) parameter[0]);
-        Method toCallOnBassDropped = (parameter) -> bassDropped((int) parameter[0]);
+        Method handleSilence = (parameter) -> handleSilence((double) parameter[0]);
+        Method handleSpectrum = (parameter) -> handleSpectrum((double[]) parameter[0]);
+        Method handlePercussion = (parameter) -> handlePercussion((double) parameter[0], (double) parameter[1]);
+        Method handlePitch = (parameter) -> handlePitch((float) parameter[0], (float) parameter[1], (double) parameter[2]);
+        Method handleOscilloscope = (parameter) -> handleOscilloscope((float[]) parameter[0]);
 
-        //dec.addDetector(toCallOnSilenceChanged, Detector.SILENCEDETECTOR);
-        //dec.addDetector(toCallOnBassDropped, Detector.SPECTRUMDETECTOR);
+        //dec.addSilenceDetector(handleSilence);
+        //dec.addSpectrumDetector(handleSpectrum);
+        //dec.addPercussionDetector(handlePercussion, 50, 8);
+        //dec.addPitchDetector(handlePitch);
+        dec.addOscilloscopeDetector(handleOscilloscope);
     }
 
-    public void silenceChanged(boolean newSilence) {
-        if (newSilence) {
-            System.out.println("Leise");
-        } else {
-            System.out.println("Laut");
+    public void handleSilence(double silence) {
+        System.out.println("Silence: " + silence);
+    }
+
+    public void handleSpectrum(double[] spectrum) {
+        if (spectrum[0] > 0.75) {
+            System.out.println("Bass Dropped");
         }
     }
 
-    public void bassDropped(int bass) {
-        System.out.println("Bass: " + bass);
+    public void handlePercussion(double time, double salience) {
+        System.out.println("Time: " + time + ", Salience: " + salience);
+    }
+
+    public void handlePitch(float pitch, float probability, double rms) {
+        System.out.println("Pitch: " + pitch + ", Prob.: " + probability + ", RMS: " + rms);
+    }
+
+    public void handleOscilloscope(float[] data) {
+
     }
 
     public static void main(String[] args) {

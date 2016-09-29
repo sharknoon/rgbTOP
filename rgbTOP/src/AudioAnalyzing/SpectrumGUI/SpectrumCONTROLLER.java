@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
  *
  * @author i01frajos445
  */
-public class SpectrumFXMLController implements Initializable {
+public class SpectrumCONTROLLER implements Initializable {
 
     @FXML
     VBox vbox;

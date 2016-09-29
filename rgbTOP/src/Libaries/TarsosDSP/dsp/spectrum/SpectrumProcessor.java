@@ -77,13 +77,17 @@ public class SpectrumProcessor implements AudioProcessor {
             correctedAmplitudes[index] += amplitudes[i];
         }
 
-        //draw the pixels 
-        double[] finished = new double[amountOfAmplitudes];
+//        //draw the pixels 
+//        double[] finished = new double[amountOfAmplitudes];
+//        for (int i = 0; i < correctedAmplitudes.length; i++) {
+//            finished[i] = (double) (Math.log1p(correctedAmplitudes[i] / 40000) / Math.log1p(1.0000001) * 100);//Muss hier noch schauen
+//            maxAmplitude = Math.max(finished[i], maxAmplitude);
+//        }
+//        finished[1] = maxAmplitude;
+        double[] finished = new double[correctedAmplitudes.length];
         for (int i = 0; i < correctedAmplitudes.length; i++) {
-            finished[i] = (double) (Math.log1p(correctedAmplitudes[i] / maxFrequency) / Math.log1p(1.0000001) * 100);
-            maxAmplitude = Math.max(finished[i], maxAmplitude);
+            finished[i] = (double) (correctedAmplitudes[i] / (double) 400.0);
         }
-        finished[1] = maxAmplitude;
 
         handler.handleSpectrum(finished);
 

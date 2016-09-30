@@ -91,7 +91,7 @@ public class NativeLibraryLoader {
         //
         String platform = System.getProperty("pi4j.platform", "raspberrypi");
         String linking = System.getProperty("pi4j.linking", "static");
-		String path = "/lib/" + platform + "/" + linking + "/" + fileName;
+		String path = "/Libaries/Pi4J/lib/" + platform + "/" + linking + "/" + fileName;
 		logger.fine("Attempting to load [" + fileName + "] using path: [" + path + "]");
 		try {
 			loadLibraryFromClasspath(path);

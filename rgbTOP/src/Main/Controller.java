@@ -2,6 +2,7 @@ package Main;
 
 import AudioAnalyzing.Detector;
 import AudioAnalyzing.Detector.Method;
+import LEDControlling.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,8 +15,10 @@ import AudioAnalyzing.Detector.Method;
  */
 public class Controller {
 
+    LEDs leds;
+
     public Controller(String[] args) {
-        //LEDs leds = new LEDs(args);
+        leds = new LEDs(args);
         Detector dec = new Detector();
 
         Method handleSilence = (parameter) -> handleSilence((double) parameter[0]);
@@ -25,10 +28,10 @@ public class Controller {
         Method handleOscilloscope = (parameter) -> handleOscilloscope((float[]) parameter[0]);
 
         //dec.addSilenceDetector(handleSilence);
-        //dec.addSpectrumDetector(handleSpectrum);
+        dec.addSpectrumDetector(handleSpectrum);
         //dec.addPercussionDetector(handlePercussion, 50, 8);
         //dec.addPitchDetector(handlePitch);
-        dec.addOscilloscopeDetector(handleOscilloscope);
+        //dec.addOscilloscopeDetector(handleOscilloscope);
     }
 
     public void handleSilence(double silence) {
@@ -36,9 +39,7 @@ public class Controller {
     }
 
     public void handleSpectrum(double[] spectrum) {
-        if (spectrum[0] > 0.75) {
-            System.out.println("Bass Dropped");
-        }
+        leds.setBrightness(Percentage.getPercent((byte) (spectrum[0]*100)));
     }
 
     public void handlePercussion(double time, double salience) {

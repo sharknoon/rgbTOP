@@ -5,7 +5,6 @@
  */
 package AudioAnalyzing.SpectrumGUI;
 
-
 import AudioAnalyzing.Detector;
 import AudioAnalyzing.Detector.Method;
 import javafx.application.Application;
@@ -45,8 +44,8 @@ public class SpectrumGUI extends Application {
         
     }
 
-    public void onCall(double[] amplitudes) {
-        controller.setAmplitudes(amplitudes);
+    public void onCall(double[] volume) {
+        controller.setAmplitudes(volume);
     }
 
     public static void main(String[] args) {

@@ -18,7 +18,8 @@ public class Controller {
     LEDs leds;
 
     public Controller(String[] args) {
-        leds = new LEDs(args);
+        
+        //leds = new LEDs(args);
         Detector dec = new Detector();
 
         Method handleSilence = (parameter) -> handleSilence((double) parameter[0]);
@@ -28,7 +29,7 @@ public class Controller {
         Method handleOscilloscope = (parameter) -> handleOscilloscope((float[]) parameter[0]);
 
         //dec.addSilenceDetector(handleSilence);
-        dec.addSpectrumDetector(handleSpectrum);
+        //dec.addSpectrumDetector(handleSpectrum);
         //dec.addPercussionDetector(handlePercussion, 50, 8);
         //dec.addPitchDetector(handlePitch);
         //dec.addOscilloscopeDetector(handleOscilloscope);
@@ -39,11 +40,12 @@ public class Controller {
     }
 
     public void handleSpectrum(double[] spectrum) {
-        leds.setBrightness(Percentage.getPercent((byte) (spectrum[0]*100)));
+        System.out.println("Bass: "+spectrum[0]);
+        //leds.setBrightness(Percentage.getPercent((byte) (spectrum[0]*100)));
     }
 
     public void handlePercussion(double time, double salience) {
-        System.out.println("Time: " + time + ", Salience: " + salience);
+        System.out.println("Percussion: Time: " + time + ", Salience: " + salience);
     }
 
     public void handlePitch(float pitch, float probability, double rms) {
@@ -51,7 +53,7 @@ public class Controller {
     }
 
     public void handleOscilloscope(float[] data) {
-
+        System.out.println("Oscilloscope");
     }
 
     public static void main(String[] args) {

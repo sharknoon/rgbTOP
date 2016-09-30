@@ -33,7 +33,7 @@ public class PitchDetector implements PitchDetectionHandler {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        PitchProcessor pp = new PitchProcessor(algorithm, Detector.pitchSampleRate, Detector.pitchBufferSize, this);
+        PitchProcessor pp = new PitchProcessor(algorithm, Detector.sampleRate, Detector.bufferSize, this);
         dispatcher.addAudioProcessor(pp);
 
         // run the dispatcher (on a new thread).
@@ -50,7 +50,7 @@ public class PitchDetector implements PitchDetectionHandler {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        PitchProcessor pp = new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.pitchSampleRate, Detector.pitchBufferSize, this);
+        PitchProcessor pp = new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this);
         dispatcher.addAudioProcessor(pp);
 
         // run the dispatcher (on a new thread).

@@ -177,7 +177,7 @@ public class Gpio {
     /**
      * GPIO constants to define interrupt levels
      *
-     * @see #wiringPiISR(int,int,com.pi4j.wiringpi.GpioInterruptCallback)
+     * @see #wiringPiISR(int,int,Libary.Pi4J.com.pi4j.wiringpi.GpioInterruptCallback)
      */
     public static final int INT_EDGE_SETUP = 0;
     public static final int INT_EDGE_FALLING = 1;

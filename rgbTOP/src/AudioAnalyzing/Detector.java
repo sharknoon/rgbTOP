@@ -22,31 +22,18 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class Detector {
 
+    private final AudioDispatcher dispatcher;
     private final Mixer mixer;
 
-    //Default SilenceSettings
-    static float silenceSampleRate = 44100;
-    static int silenceBufferSize = 512;
-    static int silenceOverlap = 0;
-    //Default SpectrumSettings
-    static float spectrumSampleRate = 44100;
-    static int spectrumBufferSize = 1024 * 4;
-    static int spectrumOverlap = 0;//768 * 4;
-    //Default PercussionSettings
-    static float percussionSampleRate = 44100;
-    static int percussionBufferSize = 512;
-    static int percussionOverlap = 0;
-    //Default PitchSettings
-    static float pitchSampleRate = 44100;
-    static int pitchBufferSize = 1024;
-    static int pitchOverlap = 0;
-    //Default OscilloscopeSettings
-    static float oscilloscopeSampleRate = 44100;
-    static int oscilloscopeBufferSize = 2048;
-    static int oscilloscopeOverlap = 0;
+    //Default Settings
+    static float sampleRate = 44100;
+    static int bufferSize = 4096;//= 1024;
+    static int overlap = 0;
+
 
     public Detector() {
         mixer = getMainMic();
+        dispatcher = init(sampleRate, bufferSize, overlap, true);
     }
 
     public interface Method {
@@ -60,8 +47,7 @@ public class Detector {
      * @param toCall should have parameter called "double silence"
      */
     public void addSilenceDetector(Method toCall) {
-        AudioDispatcher silenceDispatcher = init(silenceSampleRate, silenceBufferSize, silenceOverlap, true);
-        SilenceDetector silD = new SilenceDetector(toCall, silenceDispatcher);
+        SilenceDetector silD = new SilenceDetector(toCall, dispatcher);
     }
 
     /**
@@ -71,8 +57,7 @@ public class Detector {
      * @param threshold default -70
      */
     public void addSilenceDetector(Method toCall, double threshold) {
-        AudioDispatcher silenceDispatcher = init(silenceSampleRate, silenceBufferSize, silenceOverlap, true);
-        SilenceDetector silD = new SilenceDetector(toCall, silenceDispatcher, threshold, false);
+        SilenceDetector silD = new SilenceDetector(toCall, dispatcher, threshold, false);
     }
 
     /**
@@ -82,8 +67,7 @@ public class Detector {
      * @param toCall should have one parameter "double[] spectrum"
      */
     public void addSpectrumDetector(Method toCall) {
-        AudioDispatcher spectrumDdispatcher = init(spectrumSampleRate, spectrumBufferSize, spectrumOverlap, false);
-        SpectrumDetector specD = new SpectrumDetector(toCall, spectrumDdispatcher);
+        SpectrumDetector specD = new SpectrumDetector(toCall, dispatcher);
     }
 
     /**
@@ -96,8 +80,7 @@ public class Detector {
      * @param maxFrequency default 11000Hz
      */
     public void addSpectrumDetector(Method toCall, int amountOfAmplitudes, double minFrequency, double maxFrequency) {
-        AudioDispatcher spectrumDdispatcher = init(spectrumSampleRate, spectrumBufferSize, spectrumOverlap, false);
-        SpectrumDetector specD = new SpectrumDetector(toCall, spectrumDdispatcher, amountOfAmplitudes, minFrequency, maxFrequency);
+        SpectrumDetector specD = new SpectrumDetector(toCall, dispatcher, amountOfAmplitudes, minFrequency, maxFrequency);
     }
 
     /**
@@ -107,8 +90,7 @@ public class Detector {
      * salience"
      */
     public void addPercussionDetector(Method toCall) {
-        AudioDispatcher percussionDispatcher = init(percussionSampleRate, percussionBufferSize, percussionOverlap, true);
-        PercussionDetector perD = new PercussionDetector(toCall, percussionDispatcher);
+        PercussionDetector perD = new PercussionDetector(toCall, dispatcher);
     }
 
     /**
@@ -122,8 +104,7 @@ public class Detector {
      * to count toward broadband total (dB). In [0-20].
      */
     public void addPercussionDetector(Method toCall, double sensitivity, double threshold) {
-        AudioDispatcher percussionDispatcher = init(percussionSampleRate, percussionBufferSize, percussionOverlap, true);
-        PercussionDetector perD = new PercussionDetector(toCall, percussionDispatcher, sensitivity, threshold);
+        PercussionDetector perD = new PercussionDetector(toCall, dispatcher, sensitivity, threshold);
     }
 
     /**
@@ -133,8 +114,7 @@ public class Detector {
      * probability", "double rms"
      */
     public void addPitchDetector(Method toCall) {
-        AudioDispatcher pitchDispatcher = init(pitchSampleRate, pitchBufferSize, pitchOverlap, true);
-        PitchDetector pitD = new PitchDetector(toCall, pitchDispatcher);
+        PitchDetector pitD = new PitchDetector(toCall, dispatcher);
     }
     
     /**
@@ -142,8 +122,7 @@ public class Detector {
      * @param toCall should have a parameter called "float[] data"
      */
     public void addOscilloscopeDetector(Method toCall){
-        AudioDispatcher oscilloscopeDispatcher = init(oscilloscopeSampleRate, oscilloscopeBufferSize, oscilloscopeOverlap, true);
-        OscilloscopeDetector oscD = new OscilloscopeDetector(toCall, oscilloscopeDispatcher);
+        OscilloscopeDetector oscD = new OscilloscopeDetector(toCall, dispatcher);
     }
 
     public static final int AMDF = 0;
@@ -161,7 +140,7 @@ public class Detector {
      * @param algorithm use Detector.AMDF as an example
      */
     public void addPitchDetector(Method toCall, int algorithm) {
-        AudioDispatcher pitchDispatcher = init(pitchSampleRate, pitchBufferSize, pitchOverlap, true);
+        AudioDispatcher pitchDispatcher = init(sampleRate, bufferSize, overlap, true);
         PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.YIN;
         switch (algorithm) {
             case 0:
@@ -187,7 +166,7 @@ public class Detector {
     }
 
     private AudioDispatcher init(float sampleRate, int bufferSize, int bufferOverlap, boolean bigEndian) {
-        AudioDispatcher dispatcher = null;
+        AudioDispatcher aDispatcher = null;
         try {
             System.out.println("Started listening with " + mixer.getMixerInfo().getName());
 
@@ -197,7 +176,7 @@ public class Detector {
             line.start();
 
             // create a new dispatcher
-            dispatcher = new AudioDispatcher(new JVMAudioInputStream(new AudioInputStream(line)), bufferSize, bufferOverlap);
+            aDispatcher = new AudioDispatcher(new JVMAudioInputStream(new AudioInputStream(line)), bufferSize, bufferOverlap);
             System.out.println("fertig");
 
         } catch (LineUnavailableException ex) {
@@ -205,7 +184,7 @@ public class Detector {
         } catch (NullPointerException e) {
             System.err.println("Nullpointer: " + e);
         }
-        return dispatcher;
+        return aDispatcher;
     }
 
     private static Mixer getMainMic() {

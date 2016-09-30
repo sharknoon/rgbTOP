@@ -33,7 +33,7 @@ public class SpectrumDetector implements SpectrumHandler {
 
         // add a processor, handle pitch event.
         //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
-        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.spectrumBufferSize, this, amountOfAmplitudes, minFrequency, maxFrequency));
+        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.bufferSize, this, amountOfAmplitudes, minFrequency, maxFrequency));
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();
@@ -49,7 +49,7 @@ public class SpectrumDetector implements SpectrumHandler {
 
         // add a processor, handle pitch event.
         //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
-        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.spectrumBufferSize, this));
+        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.bufferSize, this));
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();

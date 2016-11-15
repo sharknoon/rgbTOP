@@ -1,5 +1,0 @@
-25% Helligkeit bei Stille
-50 % Helligkeit bei normalen Geräuschen wir z.B. Musik
-+ 25% Helligkeit durch Bass
-+ 25 % Helligkeit duch Takt (Beat)
-Farbwechsel bei Takt (Beat)

@@ -8,12 +8,11 @@ package LEDControlling;
  */
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
-import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
 import java.awt.Color;
 
 /**
@@ -32,16 +31,12 @@ public class LEDs {
 
     private Percentage overallBrightness;//From 0 - 100
 
-    private GpioPinPwmOutput pwmRedLED;
-    private GpioPinPwmOutput pwmGreenLED;
-    private GpioPinPwmOutput pwmBlueLED;
+    private Pin pinRedLED;
+    private Pin pinGreenLED;
+    private Pin pinBlueLED;
 
     //Settings
-    private static final float PWM_RANGE = 1024;
-
-    public static void main(String[] args) {
-        LEDs leds = new LEDs(args);
-    }
+    private static final float PWM_RANGE = 100;
 
     public LEDs(String[] args) {
         start(args);
@@ -56,11 +51,27 @@ public class LEDs {
         setBrightness(brightness, true);
     }
 
-    private void setBrightness(Percentage brightness, boolean refresh) {
+    public void addBrightness(Percentage percentage) {
+        setBrightness(overallBrightness.plus(percentage), true);
+    }
+
+    public void removeBrightness(Percentage percentage) {
+        setBrightness(overallBrightness.minus(percentage), true);
+    }
+
+    public void setBrightness(Percentage brightness, boolean refresh) {
         overallBrightness = brightness;
         if (refresh) {
             refresh();
         }
+    }
+
+    public void addBrightness(Percentage percentage, boolean refresh) {
+        setBrightness(overallBrightness.plus(percentage), refresh);
+    }
+
+    public void removeBrightness(Percentage percentage, boolean refresh) {
+        setBrightness(overallBrightness.minus(percentage), refresh);
     }
 
     /**
@@ -93,13 +104,18 @@ public class LEDs {
         setBrightness(brightness, true);
     }
 
+    int redPWM = 0;
+    int greenPWM = 0;
+    int bluePWM = 0;
+
     private void refresh() {
-        pwmRedLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessRedLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
-        pwmGreenLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessGreenLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
-        pwmBlueLED.setPwm((int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessBlueLED.get()) * overallBrightness.getMultiplierOfThisPercentage()));
-        System.out.println("Red   PWM rate is: " + pwmRedLED.getPwm() + " of " + PWM_RANGE);
-        System.out.println("Green PWM rate is: " + pwmGreenLED.getPwm() + " of " + PWM_RANGE);
-        System.out.println("Blue  PWM rate is: " + pwmBlueLED.getPwm() + " of " + PWM_RANGE);
+        SoftPwm.softPwmWrite(pinRedLED.getAddress(), redPWM = (int) (PWM_RANGE - (int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessRedLED.get()) * overallBrightness.getMultiplierOfThisPercentage())));
+        SoftPwm.softPwmWrite(pinGreenLED.getAddress(), greenPWM = (int) (PWM_RANGE - (int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessGreenLED.get()) * overallBrightness.getMultiplierOfThisPercentage())));
+        SoftPwm.softPwmWrite(pinBlueLED.getAddress(), bluePWM = (int) (PWM_RANGE - (int) Math.round(map(0, 100, 0, PWM_RANGE, brightnessBlueLED.get()) * overallBrightness.getMultiplierOfThisPercentage())));
+        System.out.println("----------------------------------------------------------");
+        System.out.println("Red   PWM rate is: " + redPWM + " of " + PWM_RANGE);
+        System.out.println("Green PWM rate is: " + greenPWM + " of " + PWM_RANGE);
+        System.out.println("Blue  PWM rate is: " + bluePWM + " of " + PWM_RANGE);
     }
 
     private double map(double srcMin, double srcMax, double tgtMin, double tgtMax, double value) {
@@ -144,49 +160,48 @@ public class LEDs {
         //
         // by default we will use gpio pin #01; however, if an argument
         // has been provided, then lookup the pin by address
-        Pin pinRedLED = CommandArgumentParser.getPin(
+        pinRedLED = CommandArgumentParser.getPin(
                 RaspiPin.class, // pin provider class to obtain pin instance from
                 RaspiPin.GPIO_23, // default pin if no pin argument found
                 args);             // argument array to search in
-        Pin pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
-        Pin pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_26, args);
+        pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
+        pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_26, args);
 
-        pwmRedLED = gpio.provisionPwmOutputPin(pinRedLED);
-        pwmGreenLED = gpio.provisionPwmOutputPin(pinGreenLED);
-        pwmBlueLED = gpio.provisionPwmOutputPin(pinBlueLED);
+        int test = 0;
+        test += SoftPwm.softPwmCreate(pinRedLED.getAddress(), 0, 100);
+        test += SoftPwm.softPwmCreate(pinGreenLED.getAddress(), 0, 100);
+        test += SoftPwm.softPwmCreate(pinBlueLED.getAddress(), 0, 100);
 
-        // you can optionally use these wiringPi methods to further customize the PWM generator
-        // see: http://wiringpi.com/reference/raspberry-pi-specifics/
-        Gpio.pwmSetMode(com.pi4j.wiringpi.Gpio.PWM_MODE_BAL);
-        Gpio.pwmSetRange((int) PWM_RANGE);
-        Gpio.pwmSetClock(500);
+        if (test > 0) {
+            System.err.println("Could not create SoftPWM!!!!!!11!!!elf!!!");
+        }
 
         // set the PWM rate to 512
         setColor(Color.white);
 
-        console.println("Press ENTER to set Color to Yellow");
-        System.console().readLine();
-
-        setColor(Color.yellow);
-
-        console.println("Press ENTER to set the Brightness to 50%");
-        System.console().readLine();
-
-        setBrightness(Percentage.get50Percent());
-
-        console.println("Press ENTER to EXIT");
-        System.console().readLine();
-        
-        stop(gpio);
+//        console.println("Press ENTER to set Color to Yellow");
+//        System.console().readLine();
+//
+//        setColor(Color.yellow);
+//
+//        console.println("Press ENTER to set the Brightness to 50%");
+//        System.console().readLine();
+//
+//        setBrightness(Percentage.get50Percent());
+//
+//        console.println("Press ENTER to EXIT");
+//        System.console().readLine();
+//        
+//        stop(gpio);
     }
 
-    private void stop(GpioController gpio) {
+    public void stop(GpioController gpio) {
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
-        pwmRedLED.setPwm(0);
 
-        pwmGreenLED.setPwm(0);
-        pwmBlueLED.setPwm(0);
+        //pwmRedLED.setPwm(0);
+        //pwmGreenLED.setPwm(0);
+        //pwmBlueLED.setPwm(0);
         gpio.shutdown();
     }
 

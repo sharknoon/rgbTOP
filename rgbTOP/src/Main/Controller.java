@@ -3,6 +3,8 @@ package Main;
 import AudioAnalyzing.Detector;
 import AudioAnalyzing.Detector.Method;
 import LEDControlling.*;
+import java.awt.Color;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,10 +18,52 @@ import LEDControlling.*;
 public class Controller {
 
     LEDs leds;
+    int invervallInMillsec = 100;
 
     public Controller(String[] args) {
-        
-        //leds = new LEDs(args);
+
+        boolean loop = true;
+        leds = new LEDs(args);
+        while (loop) {
+            try {
+                leds.setColor(Color.red);
+                leds.setBrightness(Percentage.get100Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get75Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get50Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get25Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get0Percent());
+                Thread.sleep(1000);
+                leds.setColor(Color.green);
+                leds.setBrightness(Percentage.get100Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get75Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get50Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get25Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get0Percent());
+                Thread.sleep(1000);
+                leds.setColor(Color.blue);
+                leds.setBrightness(Percentage.get100Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get75Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get50Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get25Percent());
+                Thread.sleep(1000);
+                leds.setBrightness(Percentage.get0Percent());
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                System.err.println("Konnte nicht warten!");
+            }
+        }
+
         Detector dec = new Detector();
 
         Method handleSilence = (parameter) -> handleSilence((double) parameter[0]);
@@ -29,7 +73,7 @@ public class Controller {
         Method handleOscilloscope = (parameter) -> handleOscilloscope((float[]) parameter[0]);
 
         //dec.addSilenceDetector(handleSilence);
-        //dec.addSpectrumDetector(handleSpectrum);
+        dec.addSpectrumDetector(handleSpectrum);
         //dec.addPercussionDetector(handlePercussion, 50, 8);
         //dec.addPitchDetector(handlePitch);
         //dec.addOscilloscopeDetector(handleOscilloscope);
@@ -39,9 +83,23 @@ public class Controller {
         System.out.println("Silence: " + silence);
     }
 
+    Percentage lastBass = Percentage.get0Percent();
+    long lastTime = System.currentTimeMillis();
+    double averageBass = 0.0;
+    double counter = 1;
+
     public void handleSpectrum(double[] spectrum) {
-        System.out.println("Bass: "+spectrum[0]);
-        //leds.setBrightness(Percentage.getPercent((byte) (spectrum[0]*100)));
+        if (lastTime + invervallInMillsec > System.currentTimeMillis()) {
+            leds.setBrightness(Percentage.getPercent((byte) ((averageBass / counter) * 100.0)));
+            averageBass = 0.0;
+            counter = 0.0;
+        } else {
+            averageBass += spectrum[0];
+            counter++;
+        }
+
+        //leds.removeBrightness(lastBass, false);
+        //leds.addBrightness(lastBass = Percentage.getPercent((byte) (spectrum[0] * 50)), true);
     }
 
     public void handlePercussion(double time, double salience) {

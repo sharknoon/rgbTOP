@@ -45,6 +45,7 @@ public class SpectrumGUI extends Application {
     }
 
     public void onCall(double[] volume) {
+        System.out.println(volume[0]);
         controller.setAmplitudes(volume);
     }
 

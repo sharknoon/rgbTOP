@@ -34,6 +34,7 @@ public class PercussionDetector implements OnsetHandler {
         // add a processor, handle percussion event.
         PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.sampleRate, Detector.bufferSize, this, sensitivity, threshold);
         dispatcher.addAudioProcessor(pod);
+        Detector.PROCESSORS.add(pod);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();
@@ -51,6 +52,7 @@ public class PercussionDetector implements OnsetHandler {
         // add a processor, handle percussion event.
         PercussionOnsetDetector pod = new PercussionOnsetDetector(Detector.sampleRate, Detector.bufferSize, Detector.overlap, this);
         dispatcher.addAudioProcessor(pod);
+        Detector.PROCESSORS.add(pod);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();

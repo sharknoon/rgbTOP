@@ -22,9 +22,6 @@ public class OscilloscopeCONTROLLER implements Initializable {
     @FXML
     Canvas canvas;
 
-    //Settings
-    int amountBars = 30;
-
     /**
      * Initializes the controller class.
      *
@@ -36,11 +33,11 @@ public class OscilloscopeCONTROLLER implements Initializable {
 
     }
 
-    public void windowsResized(int width, int hight){
+    public void windowsResized(int width, int hight) {
         canvas.setHeight(hight);
         canvas.setWidth(width);
     }
-    
+
     /**
      * Writes the amplitudes
      *

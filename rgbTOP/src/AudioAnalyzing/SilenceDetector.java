@@ -34,6 +34,8 @@ public class SilenceDetector implements AudioProcessor {
 
         // add a processor, handle percussion event.
         silenceDetector = new Libaries.TarsosDSP.dsp.SilenceDetector(threshold, breakProcessingQueueOnSilence);
+        Detector.PROCESSORS.add(silenceDetector);
+        Detector.PROCESSORS.add(this);
         dispatcher.addAudioProcessor(silenceDetector);
         dispatcher.addAudioProcessor(this);
 
@@ -51,6 +53,8 @@ public class SilenceDetector implements AudioProcessor {
 
         // add a processor, handle percussion event.
         silenceDetector = new Libaries.TarsosDSP.dsp.SilenceDetector();
+        Detector.PROCESSORS.add(silenceDetector);
+        Detector.PROCESSORS.add(this);
         dispatcher.addAudioProcessor(silenceDetector);
         dispatcher.addAudioProcessor(this);
 

@@ -4,6 +4,8 @@ import AudioAnalyzing.Detector;
 import AudioAnalyzing.Detector.Method;
 import LEDControlling.*;
 import java.awt.Color;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /*
@@ -18,50 +20,26 @@ import java.awt.Color;
 public class Controller {
 
     LEDs leds;
-    int invervallInMillsec = 100;
+    int fadeCounter = 0;
 
     public Controller(String[] args) {
 
-        boolean loop = true;
         leds = new LEDs(args);
-        while (loop) {
-            try {
-                leds.setColor(Color.red);
-                leds.setBrightness(Percentage.get100Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get75Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get50Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get25Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get0Percent());
-                Thread.sleep(1000);
-                leds.setColor(Color.green);
-                leds.setBrightness(Percentage.get100Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get75Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get50Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get25Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get0Percent());
-                Thread.sleep(1000);
-                leds.setColor(Color.blue);
-                leds.setBrightness(Percentage.get100Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get75Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get50Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get25Percent());
-                Thread.sleep(1000);
-                leds.setBrightness(Percentage.get0Percent());
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                System.err.println("Konnte nicht warten!");
-            }
+        leds.setBrightness(Percentage.get100Percent());
+        leds.setColor(Color.red);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ex) {
+        }
+        leds.setColor(Color.yellow);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ex) {
+        }
+        leds.setColor(Color.green);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ex) {
         }
 
         Detector dec = new Detector();
@@ -72,34 +50,64 @@ public class Controller {
         Method handlePitch = (parameter) -> handlePitch((float) parameter[0], (float) parameter[1], (double) parameter[2]);
         Method handleOscilloscope = (parameter) -> handleOscilloscope((float[]) parameter[0]);
 
-        //dec.addSilenceDetector(handleSilence);
-        dec.addSpectrumDetector(handleSpectrum);
+        //Dient als Lautstärkemessung, z.B. um vor zu lauter Lautstärke zu warnen
+        dec.addSilenceDetector(handleSilence);
+
+        // Dient als Spektrometer, der wie ein Equalizer alle Frequenzen anzeigt,
+        // z.B. für Basserkennung
+        //dec.addSpectrumDetector(handleSpectrum);
+        //Dient als Schlagerkennung, z.B. beim Klatschen
         //dec.addPercussionDetector(handlePercussion, 50, 8);
+        //Dient als Stimmlageerkennung, z.B. für Singprogramme
         //dec.addPitchDetector(handlePitch);
+        //Dient als Oscilloskop, der angezeigt werden kann, dient z.B. zur Beaterkennung
         //dec.addOscilloscopeDetector(handleOscilloscope);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dec.removeAllDetectors();
+                leds.fadeSpectrum(5000);
+            }
+        }, 20 * 60 * 1000);//20 * 60 * 1000
+
     }
 
-    public void handleSilence(double silence) {
-        System.out.println("Silence: " + silence);
-    }
+    double averageVolume = 0.5;
+    double maxVolume = 0;
+    double maxVolumeTemp = 0;
+    double amountVolumes = 0;
+    double volumes = 0;
 
-    Percentage lastBass = Percentage.get0Percent();
-    long lastTime = System.currentTimeMillis();
-    double averageBass = 0.0;
-    double counter = 1;
+    public void handleSilence(double volume) {
+        volume += 85;//statt von -85 - -50 -> 0 - 35
+        volume *= 0.02857;//statt von 0 - 35 -> 0.00 - 1.00
+
+        if (amountVolumes < 10) {
+            amountVolumes++;
+            volumes += volume;
+            if (volume > maxVolumeTemp) {
+                maxVolumeTemp = volume;
+                leds.changeColorRandom();
+            }
+        } else {
+            averageVolume = volumes / amountVolumes;
+            amountVolumes = 1;
+            volumes = volume;
+            //System.out.println("MAX: " + maxVolume);
+            maxVolume = maxVolumeTemp;
+            maxVolumeTemp = volume;
+        }
+        if (volume > averageVolume) {
+            leds.setBrightness(Percentage.getPercent((byte) (((volume - averageVolume) / (maxVolume - averageVolume)) * 100)));
+        } else {
+            leds.setBrightness(Percentage.get0Percent());
+        }
+        //System.out.println(volume);
+    }
 
     public void handleSpectrum(double[] spectrum) {
-        if (lastTime + invervallInMillsec > System.currentTimeMillis()) {
-            leds.setBrightness(Percentage.getPercent((byte) ((averageBass / counter) * 100.0)));
-            averageBass = 0.0;
-            counter = 0.0;
-        } else {
-            averageBass += spectrum[0];
-            counter++;
-        }
 
-        //leds.removeBrightness(lastBass, false);
-        //leds.addBrightness(lastBass = Percentage.getPercent((byte) (spectrum[0] * 50)), true);
     }
 
     public void handlePercussion(double time, double salience) {

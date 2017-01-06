@@ -21,7 +21,7 @@ public class SpectrumDetector implements SpectrumHandler {
     Method aToCall;
 
     /**
-     * 
+     *
      * @param toCall should have one parameter "double[] spectrum"
      * @param dispatcher
      * @param amountOfAmplitudes default = 50
@@ -33,24 +33,28 @@ public class SpectrumDetector implements SpectrumHandler {
 
         // add a processor, handle pitch event.
         //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
-        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.bufferSize, this, amountOfAmplitudes, minFrequency, maxFrequency));
+        SpectrumProcessor spectrumProcessor = new SpectrumProcessor(Detector.bufferSize, this, amountOfAmplitudes, minFrequency, maxFrequency);
+        dispatcher.addAudioProcessor(spectrumProcessor);
+        Detector.PROCESSORS.add(spectrumProcessor);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();
     }
 
     /**
-     * 
+     *
      * @param toCall should have one parameter "double[] spectrum"
-     * @param dispatcher 
+     * @param dispatcher
      */
     public SpectrumDetector(Method toCall, AudioDispatcher dispatcher) {
         aToCall = toCall;
 
         // add a processor, handle pitch event.
         //detector.dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this));//EVTL algorthmus ändern
-        dispatcher.addAudioProcessor(new SpectrumProcessor(Detector.bufferSize, this));
-
+        SpectrumProcessor spectrumProcessor = new SpectrumProcessor(Detector.bufferSize, this);
+        dispatcher.addAudioProcessor(spectrumProcessor);
+        Detector.PROCESSORS.add(spectrumProcessor);
+        
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();
     }

@@ -74,7 +74,9 @@ public class SpectrumProcessor implements AudioProcessor {
         //iterate the lage arrray and map to pixels
         for (int i = amplitudes.length / 800; i < amplitudes.length; i++) {
             int index = frequencyToBin(i * 44100 / (amplitudes.length * 8));
-            correctedAmplitudes[index] += amplitudes[i];
+            if (index >= 0) {
+                correctedAmplitudes[index] += amplitudes[i];
+            }
         }
 
 //        //draw the pixels 

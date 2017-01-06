@@ -40,12 +40,14 @@ public class SpectrumGUI extends Application {
         Method toCall = (values) -> onCall((double[]) values[0]);
 
         Detector dec = new Detector();
-        dec.addSpectrumDetector(toCall);
+        dec.addSpectrumDetector(toCall,50,50,11000);
         
     }
 
     public void onCall(double[] volume) {
-        System.out.println(volume[0]);
+        //50 lang, die ersten 13 können weg, die letzten 4 können weg
+        //double[] array = new double[33];
+        //System.arraycopy(volume, 12, array, 0, 33);
         controller.setAmplitudes(volume);
     }
 

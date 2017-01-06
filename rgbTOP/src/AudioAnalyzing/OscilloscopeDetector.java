@@ -27,7 +27,9 @@ public class OscilloscopeDetector implements OscilloscopeEventHandler {
         toCall = pToCall;
 
         // add a processor, handle percussion event.
-        dispatcher.addAudioProcessor(new Oscilloscope(this));
+        Oscilloscope oscilloscope = new Oscilloscope(this);
+        dispatcher.addAudioProcessor(oscilloscope);
+        Detector.PROCESSORS.add(oscilloscope);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();

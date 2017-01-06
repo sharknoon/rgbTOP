@@ -14,6 +14,8 @@ import com.pi4j.util.CommandArgumentParser;
 import com.pi4j.util.Console;
 import com.pi4j.wiringpi.SoftPwm;
 import java.awt.Color;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * <p>
@@ -30,6 +32,7 @@ public class LEDs {
     private Percentage brightnessBlueLED;//From 0 - 100
 
     private Percentage overallBrightness;//From 0 - 100
+    private Color overallColor;
 
     private Pin pinRedLED;
     private Pin pinGreenLED;
@@ -37,6 +40,7 @@ public class LEDs {
 
     //Settings
     private static final float PWM_RANGE = 100;
+    private static final int FADING_STEPS = 25;
 
     public LEDs(String[] args) {
         start(args);
@@ -84,6 +88,7 @@ public class LEDs {
     }
 
     private void setColor(Color color, boolean refresh) {
+        overallColor = color;
         brightnessRedLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getRed())));
         brightnessGreenLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getGreen())));
         brightnessBlueLED = Percentage.getPercent((byte) Math.round(map(0, 255, 0, 100, color.getBlue())));
@@ -102,6 +107,111 @@ public class LEDs {
     public void setColorAndBrightness(Color color, Percentage brightness) {
         setColor(color, false);
         setBrightness(brightness, true);
+    }
+
+    public void changeColorRandom() {
+        int rand1 = (int) Math.floor(Math.random() * 256);
+        int rand2 = (int) Math.floor(Math.random() * 256);
+        int rand3 = (int) Math.floor(Math.random() * 256);
+        Color color = new Color(rand1, rand2, rand3);
+        setColor(color);
+    }
+
+    int counter = 0;
+
+    public void fadeToColor(Color color, int durationInMiliseconds) {
+        final int curRed = overallColor.getRed();
+        final int curGreen = overallColor.getGreen();
+        final int curBlue = overallColor.getBlue();
+        final int futRed = color.getRed();
+        final int futGreen = color.getGreen();
+        final int futBlue = color.getBlue();
+
+        counter = 0;
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                counter++;
+                if (counter > FADING_STEPS) {
+                    timer.cancel();
+                }
+                int differenceRed = futRed - curRed;
+                double differencePerRateRed = differenceRed / FADING_STEPS;
+                int newRed = (int) (curRed + (differencePerRateRed * counter));
+                if (newRed < 0) {
+                    newRed = 0;
+                }
+                if (newRed > 255) {
+                    newRed = 255;
+                }
+
+                int differenceGreen = futGreen - curGreen;
+                double differencePerRateGreen = differenceGreen / FADING_STEPS;
+                int newGreen = (int) (curGreen + (differencePerRateGreen * counter));
+                if (newGreen < 0) {
+                    newGreen = 0;
+                }
+                if (newGreen > 255) {
+                    newGreen = 255;
+                }
+
+                int differenceBlue = futBlue - curBlue;
+                double differencePerRateBlue = differenceBlue / FADING_STEPS;
+                int newBlue = (int) (curBlue + (differencePerRateBlue * counter));
+                if (newBlue < 0) {
+                    newBlue = 0;
+                }
+                if (newBlue > 255) {
+                    newBlue = 255;
+                }
+                setColor(new Color(newRed, newGreen, newBlue));
+            }
+        }, 0, durationInMiliseconds / FADING_STEPS);
+    }
+
+    int fadeCounter = 0;
+    Timer fadeTimer;
+
+    public void fadeSpectrum(int timeBetweenFadingInMilliseconds) {
+        setBrightness(Percentage.get100Percent());
+        fadeTimer = new Timer();
+        fadeTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (fadeCounter > 6) {
+                    fadeCounter = 0;
+                }
+                switch (fadeCounter) {
+                    case 0:
+                        fadeToColor(new Color(103, 36, 131), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 1:
+                        fadeToColor(new Color(34, 56, 141), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 2:
+                        fadeToColor(new Color(0, 144, 215), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 3:
+                        fadeToColor(new Color(0, 152, 87), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 4:
+                        fadeToColor(new Color(251, 206, 1), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 5:
+                        fadeToColor(new Color(238, 119, 15), timeBetweenFadingInMilliseconds);
+                        break;
+                    case 6:
+                        fadeToColor(new Color(211, 14, 41), timeBetweenFadingInMilliseconds);
+                        break;
+                }
+                fadeCounter++;
+            }
+        }, 0, timeBetweenFadingInMilliseconds + 10);
+    }
+
+    public void stopFadeSpectrum() {
+        fadeTimer.cancel();
     }
 
     int redPWM = 0;
@@ -162,10 +272,10 @@ public class LEDs {
         // has been provided, then lookup the pin by address
         pinRedLED = CommandArgumentParser.getPin(
                 RaspiPin.class, // pin provider class to obtain pin instance from
-                RaspiPin.GPIO_23, // default pin if no pin argument found
+                RaspiPin.GPIO_02, // default pin if no pin argument found
                 args);             // argument array to search in
-        pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_24, args);
-        pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_26, args);
+        pinGreenLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_03, args);
+        pinBlueLED = CommandArgumentParser.getPin(RaspiPin.class, RaspiPin.GPIO_00, args);
 
         int test = 0;
         test += SoftPwm.softPwmCreate(pinRedLED.getAddress(), 0, 100);

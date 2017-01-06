@@ -22,12 +22,13 @@ public class PitchDetector implements PitchDetectionHandler {
 
     final Method toCall;
 
-        /**
+    /**
      *
      * @param pToCall should have 3 parameters "float pitch", "float
      * probability", "double rms"
      * @param dispatcher
-     * @param algorithm An enum defining the algorithm. default PitchEstimationAlgorithm.YIN
+     * @param algorithm An enum defining the algorithm. default
+     * PitchEstimationAlgorithm.YIN
      */
     public PitchDetector(Method pToCall, AudioDispatcher dispatcher, PitchEstimationAlgorithm algorithm) {
         toCall = pToCall;
@@ -35,11 +36,12 @@ public class PitchDetector implements PitchDetectionHandler {
         // add a processor, handle percussion event.
         PitchProcessor pp = new PitchProcessor(algorithm, Detector.sampleRate, Detector.bufferSize, this);
         dispatcher.addAudioProcessor(pp);
+        Detector.PROCESSORS.add(pp);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();
     }
-    
+
     /**
      *
      * @param pToCall should have 3 parameters "float pitch", "float
@@ -52,6 +54,7 @@ public class PitchDetector implements PitchDetectionHandler {
         // add a processor, handle percussion event.
         PitchProcessor pp = new PitchProcessor(PitchEstimationAlgorithm.YIN, Detector.sampleRate, Detector.bufferSize, this);
         dispatcher.addAudioProcessor(pp);
+        Detector.PROCESSORS.add(pp);
 
         // run the dispatcher (on a new thread).
         new Thread(dispatcher, "Audio dispatching").start();

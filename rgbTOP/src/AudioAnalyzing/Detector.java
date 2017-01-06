@@ -6,8 +6,10 @@ package AudioAnalyzing;
  * and open the template in the editor.
  */
 import Libaries.TarsosDSP.dsp.AudioDispatcher;
+import Libaries.TarsosDSP.dsp.AudioProcessor;
 import Libaries.TarsosDSP.dsp.io.jvm.JVMAudioInputStream;
 import Libaries.TarsosDSP.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+import java.util.ArrayList;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -24,12 +26,12 @@ public class Detector {
 
     private final AudioDispatcher dispatcher;
     private final Mixer mixer;
+    public static final ArrayList<AudioProcessor> PROCESSORS = new ArrayList<>();
 
     //Default Settings
     static float sampleRate = 44100;
     static int bufferSize = 4096;//= 1024;
     static int overlap = 0;
-
 
     public Detector() {
         mixer = getMainMic();
@@ -116,12 +118,14 @@ public class Detector {
     public void addPitchDetector(Method toCall) {
         PitchDetector pitD = new PitchDetector(toCall, dispatcher);
     }
-    
+
     /**
-     * Dient als Oscilloskop, der angezeigt werden kann, dient z.B. zur Beaterkennung
+     * Dient als Oscilloskop, der angezeigt werden kann, dient z.B. zur
+     * Beaterkennung
+     *
      * @param toCall should have a parameter called "float[] data"
      */
-    public void addOscilloscopeDetector(Method toCall){
+    public void addOscilloscopeDetector(Method toCall) {
         OscilloscopeDetector oscD = new OscilloscopeDetector(toCall, dispatcher);
     }
 
@@ -163,6 +167,15 @@ public class Detector {
                 break;
         }
         PitchDetector pitD = new PitchDetector(toCall, pitchDispatcher, algo);
+    }
+
+    public void removeAllDetectors() {
+        PROCESSORS.stream().forEach((processor) -> {
+            try {
+                dispatcher.removeAudioProcessor(processor);
+            } catch (Exception e) {
+            }
+        });
     }
 
     private AudioDispatcher init(float sampleRate, int bufferSize, int bufferOverlap, boolean bigEndian) {
